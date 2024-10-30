@@ -2,10 +2,8 @@
 
 ## Backend
 - `cd backend`
-- Создать `.env` файл (см. `env.example`)
 - `pip install -r requirements.txt`
-- `python src/manage.py migrate`
-- `python src/manage.py runserver`
+- `fastapi dev`
 
 ## Frontend
 - `cd frontend`
