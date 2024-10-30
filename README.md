@@ -13,6 +13,6 @@
 - `yarn install`
 - `yarn start`
 
-# TODO:
+# TODO
 - написать нормальный readme
 - запуск через докер
