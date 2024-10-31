@@ -16,6 +16,10 @@ indent_size = 2
 [Makefile]
 indent_style = tab
 
+[*.nix]
+indent_style = space
+indent_size = 2
+
 [lib/**.js]
 indent_style = space
 indent_size = 2
