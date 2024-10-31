@@ -170,3 +170,7 @@ sketch
 # Ignore all local history of files
 .history
 .ionide
+
+# Nix dev shells
+.devenv
+.pre-commit-config.yaml
