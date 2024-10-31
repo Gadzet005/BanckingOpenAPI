@@ -17,7 +17,8 @@
 
 -   `nix develop --impure -c fish`
 -   `devenv up`
--   Собрать докер(не работает): `nix run --impure .#container-obp-api.copyToDockerDaemon`)
+-   Собрать докер(не работает):
+      `nix run --impure .#container-obp-api.copyToDockerDaemon`)
 
 # TODO
 
