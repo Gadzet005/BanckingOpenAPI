@@ -1,2 +1,4 @@
-export const HOME = "/";
-export const SOME_PAGE = "/some-page";
+export const HOME_PAGE = "/";
+export const LOGIN_PAGE = "/login";
+export const REGISTER_PAGE = "/register";
+export const ACCOUNT_PAGE = "/account";
