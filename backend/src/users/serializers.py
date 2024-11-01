@@ -51,15 +51,21 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         email = attrs.get('email')
         password = attrs.get('password')
 
+        # Аутентификация пользователя
         user = authenticate(email=email, password=password)
-
         if user is None:
             raise serializers.ValidationError(_("Не удалось войти с предоставленными данными."))
 
         if not user.is_active:
             raise serializers.ValidationError(_("Пользователь неактивен."))
 
-        data = super().validate({'email': user.email, 'password': password})
-        data['phone_number'] = user.phone_number
-        data['email'] = user.email
+        data = super().validate(attrs)
+        
+        refresh = self.get_token(user)
+        refresh['email'] = user.email
+        refresh['phone_number'] = user.phone_number
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        
         return data
