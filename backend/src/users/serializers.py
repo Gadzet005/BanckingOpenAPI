@@ -51,7 +51,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         email = attrs.get('email')
         password = attrs.get('password')
 
-        # Аутентификация пользователя
         user = authenticate(email=email, password=password)
         if user is None:
             raise serializers.ValidationError(_("Не удалось войти с предоставленными данными."))
