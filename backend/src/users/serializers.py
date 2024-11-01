@@ -60,4 +60,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise serializers.ValidationError(_("Пользователь неактивен."))
 
         data = super().validate({'email': user.email, 'password': password})
+        data['phone_number'] = user.phone_number
+        data['email'] = user.email
         return data
