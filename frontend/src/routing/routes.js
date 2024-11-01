@@ -1,14 +1,27 @@
-import { HOME, SOME_PAGE } from "./path";
+import { HOME_PAGE, LOGIN_PAGE, REGISTER_PAGE, ACCOUNT_PAGE } from "./path";
 import { Home } from "../components/home/Home";
-import { SomePage } from "../components/some_page/SomePage";
+import { Login } from "../components/user/Login";
+import { Register } from "../components/user/Register";
+import { Account } from "../components/user/Account";
 
 export const publicRoutes = [
     {
-        path: HOME,
+        path: HOME_PAGE,
         component: <Home />,
     },
     {
-        path: SOME_PAGE,
-        component: <SomePage />,
+        path: LOGIN_PAGE,
+        component: <Login />,
+    },
+    {
+        path: REGISTER_PAGE,
+        component: <Register />,
+    },
+];
+
+export const authRoutes = [
+    {
+        path: ACCOUNT_PAGE,
+        component: <Account />,
     },
 ];
