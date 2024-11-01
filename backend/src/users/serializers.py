@@ -22,8 +22,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate_phone_number(self, value):
+        if not value.startswith('+7'):
+            raise serializers.ValidationError("Номер телефона должен начинаться с +7.")
+        
+        if not value[2:].isdigit() or len(value) != 12:
+            raise serializers.ValidationError("Номер телефона должен быть в формате +7XXXXXXXXXX.")
+
         if User.objects.filter(phone_number=value).exists():
             raise serializers.ValidationError("Пользователь с таким номером телефона уже существует.")
+        
         return value
 
     def create(self, validated_data):
@@ -34,7 +41,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
