@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import json
-from .models import Bank, Account, Transaction
+from .models import Bank, Account, Transaction, UserBank
 
 class TransactionWebhookAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -18,6 +18,8 @@ class TransactionWebhookAPIView(APIView):
         type = data.get('type')
         description = data.get('description')
         date_str = data.get('date')
+        bank_user_id = data.get('user_id')
+        balance = data.get('balance')
         
         # Проверка наличия обязательных полей
         if not all([bank_code, account_code, amount, type]):
@@ -30,7 +32,12 @@ class TransactionWebhookAPIView(APIView):
             bank = Bank.objects.get(bank_code=bank_code)
         except Bank.DoesNotExist:
             return Response({"error": "Банк не найден"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            userbank = UserBank.objects.get(bank_id=bank, bank_user_id = bank_user_id)
+        except:
 
+            return Response({"error": "Банк не найден!"}, status=status.HTTP_404_NOT_FOUND)
         # Проверка существования счета
         try:
             account = Account.objects.get(bank_id=bank, account_code=account_code)
@@ -57,11 +64,14 @@ class TransactionWebhookAPIView(APIView):
             {
                 'type': 'send_transaction',
                 'bank_name': bank.name,
+                'bank_code': bank_code,
                 'account_code': account.account_code,
                 'amount': amount,
                 'transaction_type': type,
                 'description': description,
-                'date': date.strftime("%Y-%m-%d %H:%M:%S") if date else None
+                'balance': balance,
+                'date': date.strftime("%Y-%m-%d %H:%M:%S") if date else None,
+                'user_id': account.user_id.id
             }
         )
 

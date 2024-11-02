@@ -8,6 +8,7 @@ User = get_user_model()
 class Bank(models.Model):
     name = models.CharField(max_length=30)
     bank_code = models.IntegerField(unique=True)
+    api_url = models.URLField(null=True)
 
 class Account(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -36,6 +37,5 @@ class Transaction(models.Model):
 class UserBank(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     bank_id = models.ForeignKey(Bank, on_delete=models.CASCADE)
-    access = models.CharField(max_length=255)
-    refresh = models.CharField(max_length=255)
-    date = models.DateField()
+    bank_user_id = models.IntegerField(null=True)
+    date = models.DateField(null=True)
