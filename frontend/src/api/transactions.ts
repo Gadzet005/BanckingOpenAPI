@@ -11,7 +11,6 @@ export const getTransactions = async (): Promise<Transaction[]> => {
             };
         });
     } catch (error) {
-        console.log(error);
         return [];
     }
 };

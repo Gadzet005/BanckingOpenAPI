@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useGetUser } from "../public/user";
 import { authRoutes, publicRoutes } from "./routes";
+import { Path } from "./path";
 
 export const AppRouter = observer(() => {
   const user = useGetUser();
@@ -17,7 +18,7 @@ export const AppRouter = observer(() => {
     <Routes>
       {user.isAuth && authRoutesComp}
       {publicRoutesComp}
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to={Path.loginPage} />} />
     </Routes>
   );
 });
