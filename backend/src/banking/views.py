@@ -10,7 +10,7 @@ from .models import Bank, Account, Transaction, UserBank
 
 class TransactionWebhookAPIView(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.data  # Получаем данные напрямую из request.data, это автоматически обрабатывается как JSON
+        data = request.data
         
         bank_code = data.get('bank_code')
         account_code = data.get('account_code')
@@ -21,13 +21,11 @@ class TransactionWebhookAPIView(APIView):
         bank_user_id = data.get('user_id')
         balance = data.get('balance')
         
-        # Проверка наличия обязательных полей
         if not all([bank_code, account_code, amount, type]):
             return Response({"error": "Нет всех обязательных полей"}, status=status.HTTP_400_BAD_REQUEST)
 
         date = parse_datetime(date_str) if date_str else None
 
-        # Проверка существования банка
         try:
             bank = Bank.objects.get(bank_code=bank_code)
         except Bank.DoesNotExist:
@@ -36,19 +34,16 @@ class TransactionWebhookAPIView(APIView):
         try:
             userbank = UserBank.objects.get(bank_id=bank, bank_user_id = bank_user_id)
         except:
-
             return Response({"error": "Банк не найден!"}, status=status.HTTP_404_NOT_FOUND)
-        # Проверка существования счета
+        
         try:
-            account = Account.objects.get(bank_id=bank, account_code=account_code)
+            account = Account.objects.get(bank_id=bank, account_code=account_code, user_id=userbank.user_id)
         except Account.DoesNotExist:
             return Response({"error": "Счет не найден"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Проверка на существование такой транзакции
+        
         if Transaction.objects.filter(account_id=account, amount=amount, type=type, description=description, date=date).exists():
             return Response({"error": "Такой объект транзакции уже существует"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Создание транзакции
         transaction = Transaction.objects.create(
             account_id=account,
             amount=amount,
@@ -56,8 +51,8 @@ class TransactionWebhookAPIView(APIView):
             description=description,
             date=date
         )
-
-        # Отправка уведомления через канал
+        userbank.date = date
+        userbank.save()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'transactions',
