@@ -1,6 +1,9 @@
-const PasswordField = ({
-  name = "password",
-  label = "Пароль",
+import { FC } from "react";
+import { InputProps } from "./props";
+
+const PhoneField: FC<InputProps> = ({
+  name = "phone_number",
+  label = "Телефон",
   required = true,
 }) => {
   return (
@@ -9,15 +12,16 @@ const PasswordField = ({
         {label}
       </label>
       <input
-        type="password"
+        type="tel"
         name={name}
-        autoComplete="current-password"
+        autoComplete="tel"
         className="form-control"
         id={name}
+        placeholder="+79179852425"
         required={required}
       />
     </div>
   );
 };
 
-export default PasswordField;
+export default PhoneField;

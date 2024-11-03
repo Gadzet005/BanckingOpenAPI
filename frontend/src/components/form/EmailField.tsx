@@ -1,6 +1,9 @@
-const PhoneField = ({
-  name = "phone_number",
-  label = "Телефон",
+import { FC } from "react";
+import { InputProps } from "./props";
+
+const EmailField: FC<InputProps> = ({
+  name = "email",
+  label = "Email",
   required = true,
 }) => {
   return (
@@ -9,16 +12,16 @@ const PhoneField = ({
         {label}
       </label>
       <input
-        type="tel"
+        type="email"
         name={name}
-        autoComplete="tel"
+        autoComplete="email"
         className="form-control"
         id={name}
-        placeholder="+79179852425"
+        placeholder="example@email.com"
         required={required}
       />
     </div>
   );
 };
 
-export default PhoneField;
+export default EmailField;

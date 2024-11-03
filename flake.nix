@@ -48,8 +48,9 @@
 
           processes = {
             frontend.exec =
-              "yarn --cwd frontend install && yarn --cwd frontend start";
-            backend.exec = "fastapi dev backend/main.py";
+              "cd frontend && yarn install && yarn dev";
+            backend.exec = 
+              "cd backend/src && python manage.py migrate && python manage.py runserver";
           };
 
           containers."obp-api" = {

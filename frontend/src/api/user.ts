@@ -1,6 +1,14 @@
 import { backend } from "./core";
 
-export const login = async (email, password) => {
+interface Result {
+    ok: boolean;
+    messages?: string[];
+}
+
+export const login = async (
+    email: string,
+    password: string,
+): Promise<Result> => {
     try {
         const response = await backend.post("/login/", {
             email: email,
@@ -13,7 +21,7 @@ export const login = async (email, password) => {
         localStorage.setItem("refresh_token", refresh_token);
 
         return { ok: true };
-    } catch (error) {
+    } catch (error: any) {
         if (error.status === 400) {
             return {
                 ok: false,
@@ -28,7 +36,11 @@ export const login = async (email, password) => {
     }
 };
 
-export const register = async (email, phone_number, password) => {
+export const register = async (
+    email: string,
+    phone_number: string,
+    password: string,
+): Promise<Result> => {
     try {
         await backend.post("/register/", {
             email: email,
@@ -37,7 +49,7 @@ export const register = async (email, phone_number, password) => {
         });
 
         return { ok: true };
-    } catch (error) {
+    } catch (error: any) {
         if (error.status === 400) {
             return {
                 ok: false,
