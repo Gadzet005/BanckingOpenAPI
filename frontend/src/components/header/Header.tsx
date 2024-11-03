@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useGetUser } from "../../state/user";
+import { useGetUser } from "../../public/user";
 import { HeaderItem } from "./HeaderItem";
 import { headerList } from "./headerList";
 import { HeaderElemType } from "./interfaces";
