@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { FC } from "react";
 
-export const HeaderItem = ({ name, path, related = [] }) => {
+interface Props {
+  name: string;
+  path: string;
+  related?: string[];
+}
+
+export const HeaderItem: FC<Props> = ({ name, path, related = [] }) => {
   const location = useLocation();
   const [isActive, setIsActive] = useState(false);
 

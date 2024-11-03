@@ -1,49 +1,57 @@
 import { observer } from "mobx-react-lite";
-import { useContext, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login, register } from "../../api/user";
-import { ACCOUNT_PAGE, LOGIN_PAGE } from "../../routing/path";
-import { UserContext } from "../../state/context";
+import { Path } from "../../routing/path";
+import { useGetUser } from "../../state/user";
 import {
   EmailField,
   PasswordField,
   PhoneField,
   SubmitButton,
 } from "../form/FormItems";
-import { ErrorState } from "./state";
+import { MessageManager } from "../message/messageManager";
 
 export const Register = observer(() => {
-  const user = useContext(UserContext);
-  const [errors] = useState(() => new ErrorState());
+  const user = useGetUser();
+  const [messageManager] = useState(() => new MessageManager());
   const navigate = useNavigate();
 
-  const submitHandler = (event) => {
+  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    errors.clearMessages();
+    messageManager.clearMessages();
 
-    const formData = new FormData(event.target);
-    const email = formData.get("email");
-    const phone_number = formData.get("phone_number");
-    const password = formData.get("password");
-    const passwordRepeat = formData.get("passwordRepeat");
+    const formData = new FormData(event.target as HTMLFormElement);
+    const email: string = formData.get("email") as string;
+    const phone_number: string = formData.get("phone_number") as string;
+    const password: string = formData.get("password") as string;
+    const passwordRepeat: string = formData.get("passwordRepeat") as string;
 
     if (password !== passwordRepeat) {
-      errors.addMessages("Пароли не совпадают");
+      messageManager.addError("Пароли не совпадают");
       return;
     }
 
+    messageManager.addPrimary("Выполняется регистрация...");
+
     register(email, phone_number, password).then((result) => {
       if (!result["ok"]) {
-        errors.addMessages(...result["messages"]);
+        messageManager.clearMessages();
+        result.messages?.forEach((message) => {
+          messageManager.addError(message);
+        });
         return;
       }
 
       login(email, password).then((loginResult) => {
+        messageManager.clearMessages();
         if (loginResult["ok"]) {
           user.tryLogin();
-          navigate(ACCOUNT_PAGE);
+          navigate(Path.AccountPage);
         } else {
-          errors.addMessages(...loginResult["messages"]);
+          loginResult.messages?.forEach((message) => {
+            messageManager.addError(message);
+          });
         }
       });
     });
@@ -54,13 +62,13 @@ export const Register = observer(() => {
       <h1 className="d-flex justify-content-center">Регистрация</h1>
       <div className="d-flex justify-content-center">
         <p className="me-2">Уже есть аккаунт?</p>{" "}
-        <Link className="text-decoration-none" to={LOGIN_PAGE}>
+        <Link className="text-decoration-none" to={Path.loginPage}>
           Страница входа
         </Link>
       </div>
 
       <div className="d-flex justify-content-center my-3">
-        <div className="d-grid text-center gap-1">{errors.view}</div>
+        <div className="d-grid text-center gap-1">{messageManager.view}</div>
       </div>
 
       <div className="d-flex justify-content-center">

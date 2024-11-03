@@ -1,11 +1,10 @@
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { UserContext } from "../state/context";
+import { useGetUser } from "../state/user";
 import { authRoutes, publicRoutes } from "./routes";
 
 export const AppRouter = observer(() => {
-  const user = useContext(UserContext);
+  const user = useGetUser();
 
   const authRoutesComp = authRoutes.map(({ path, component }) => {
     return <Route key={path} path={path} element={component} />;

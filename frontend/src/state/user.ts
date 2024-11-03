@@ -1,11 +1,18 @@
+import { createContext, useContext } from "react";
 import { makeObservable, observable, action } from "mobx";
 import { jwtDecode } from "jwt-decode";
 
+type UserJWTPayload = {
+    user_id: number;
+    email: string;
+    phone_number: string;
+};
+
 export class User {
-    isAuth = false;
-    id = null;
-    email = null;
-    phoneNumber = null;
+    isAuth: boolean = false;
+    id?: number;
+    email?: string;
+    phoneNumber?: string;
 
     constructor() {
         makeObservable(this, {
@@ -17,7 +24,7 @@ export class User {
         });
     }
 
-    login(id, email, phoneNumber) {
+    login(id: number, email: string, phoneNumber: string) {
         this.isAuth = true;
         this.id = id;
         this.email = email;
@@ -26,10 +33,9 @@ export class User {
 
     logout() {
         this.isAuth = false;
-        this.id = null;
-        this.name = null;
-        this.email = null;
-        this.phoneNumber = null;
+        this.id = undefined;
+        this.email = undefined;
+        this.phoneNumber = undefined;
 
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
@@ -41,8 +47,12 @@ export class User {
         }
 
         const token = localStorage.getItem("access_token");
+        if (!token) {
+            return;
+        }
+
         try {
-            const decoded = jwtDecode(token);
+            const decoded = jwtDecode<UserJWTPayload>(token);
             this.login(
                 decoded["user_id"],
                 decoded["email"],
@@ -55,3 +65,7 @@ export class User {
         }
     }
 }
+
+const defaultUser = new User();
+export const UserContext = createContext<User>(defaultUser);
+export const useGetUser = () => useContext(UserContext);

@@ -1,14 +1,16 @@
 import axios from "axios";
 
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
 export const backend = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_URL,
+    baseURL: backendURL,
 });
 
 export const authBackend = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_URL,
+    baseURL: backendURL,
 });
 
-const authInterceptor = (config) => {
+const authInterceptor = (config: any) => {
     const access_token = localStorage.getItem("access_token");
     if (!access_token) {
         console.warn("Access token not found in local storage");
@@ -18,7 +20,7 @@ const authInterceptor = (config) => {
     return config;
 };
 
-const authErrorHandler = async (error) => {
+const authErrorHandler = async (error: any) => {
     return Promise.reject(error);
 };
 

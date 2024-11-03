@@ -1,15 +1,14 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { LOGIN_PAGE } from "../../routing/path";
-import { UserContext } from "../../state/context";
+import { Path } from "../../routing/path";
+import { useGetUser } from "../../state/user";
 
 export const Account = () => {
-  const user = useContext(UserContext);
+  const user = useGetUser();
   const navigate = useNavigate();
 
   const logoutHandler = () => {
     user.logout();
-    navigate(LOGIN_PAGE);
+    navigate(Path.loginPage);
   };
 
   return (
