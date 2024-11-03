@@ -20,6 +20,7 @@ class TransactionWebhookAPIView(APIView):
         date_str = data.get('date')
         bank_user_id = data.get('user_id')
         balance = data.get('balance')
+        subtype = data.get('subtype')
         
         if not all([bank_code, account_code, amount, type]):
             return Response({"error": "Нет всех обязательных полей"}, status=status.HTTP_400_BAD_REQUEST)
@@ -41,7 +42,7 @@ class TransactionWebhookAPIView(APIView):
         except Account.DoesNotExist:
             return Response({"error": "Счет не найден"}, status=status.HTTP_404_NOT_FOUND)
         
-        if Transaction.objects.filter(account_id=account, amount=amount, type=type, description=description, date=date).exists():
+        if Transaction.objects.filter(account_id=account, amount=amount, type=type, description=description, date=date, subtype=subtype).exists():
             return Response({"error": "Такой объект транзакции уже существует"}, status=status.HTTP_400_BAD_REQUEST)
 
         transaction = Transaction.objects.create(
@@ -49,7 +50,8 @@ class TransactionWebhookAPIView(APIView):
             amount=amount,
             type=type,
             description=description,
-            date=date
+            date=date,
+            subtype=subtype
         )
         userbank.date = date
         userbank.save()
@@ -63,6 +65,7 @@ class TransactionWebhookAPIView(APIView):
                 'account_code': account.account_code,
                 'amount': amount,
                 'transaction_type': type,
+                'transaction_subtype': subtype,
                 'description': description,
                 'balance': balance,
                 'date': date.strftime("%Y-%m-%d %H:%M:%S") if date else None,
