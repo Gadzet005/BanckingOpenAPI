@@ -14,12 +14,17 @@ export const headerList: Array<HeaderListElem> = [
     },
     {
         name: "Регистрация",
-        path: Path.RegisterPage,
+        path: Path.registerPage,
         type: HeaderElemType.onlyForAnonymous,
     },
     {
+        name: "Транзакции",
+        path: Path.transactions,
+        type: HeaderElemType.onylForAuth,
+    },
+    {
         name: "Личный кабинет",
-        path: Path.AccountPage,
+        path: Path.accountPage,
         type: HeaderElemType.onylForAuth,
     },
 ];

@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../api/user";
 import { Path } from "../../routing/path";
-import { useGetUser } from "../../state/user";
+import { useGetUser } from "../../public/user";
 import { EmailField, PasswordField, SubmitButton } from "../form/FormItems";
 import { MessageManager } from "../message/messageManager";
 
@@ -26,7 +26,7 @@ export const Login = observer(() => {
       messageManager.clearMessages();
       if (result["ok"]) {
         user.tryLogin();
-        navigate(Path.AccountPage);
+        navigate(Path.accountPage);
       } else {
         result.messages?.forEach((message) => {
           messageManager.addError(message);
@@ -40,7 +40,7 @@ export const Login = observer(() => {
       <h1 className="d-flex justify-content-center">Вход</h1>
       <div className="d-flex justify-content-center">
         <p className="me-2">Нет аккаунта?</p>{" "}
-        <Link className="text-decoration-none" to={Path.RegisterPage}>
+        <Link className="text-decoration-none" to={Path.registerPage}>
           Страница регистрации
         </Link>
       </div>

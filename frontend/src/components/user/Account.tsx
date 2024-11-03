@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../routing/path";
-import { useGetUser } from "../../state/user";
+import { useGetUser } from "../../public/user";
 
 export const Account = () => {
   const user = useGetUser();

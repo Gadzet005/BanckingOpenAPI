@@ -2,11 +2,11 @@ import { createContext, useContext } from "react";
 import { makeObservable, observable, action } from "mobx";
 import { jwtDecode } from "jwt-decode";
 
-type UserJWTPayload = {
+interface UserJWTPayload {
     user_id: number;
     email: string;
     phone_number: string;
-};
+}
 
 export class User {
     isAuth: boolean = false;

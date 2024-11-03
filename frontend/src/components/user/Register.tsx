@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login, register } from "../../api/user";
 import { Path } from "../../routing/path";
-import { useGetUser } from "../../state/user";
+import { useGetUser } from "../../public/user";
 import {
   EmailField,
   PasswordField,
@@ -47,7 +47,7 @@ export const Register = observer(() => {
         messageManager.clearMessages();
         if (loginResult["ok"]) {
           user.tryLogin();
-          navigate(Path.AccountPage);
+          navigate(Path.accountPage);
         } else {
           loginResult.messages?.forEach((message) => {
             messageManager.addError(message);

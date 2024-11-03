@@ -3,6 +3,7 @@ import { Home } from "../components/home/Home";
 import { Login } from "../components/user/Login";
 import { Register } from "../components/user/Register";
 import { Account } from "../components/user/Account";
+import { TransactionListView } from "../components/transactions/transactionListView";
 
 export const publicRoutes = [
   {
@@ -14,14 +15,18 @@ export const publicRoutes = [
     component: <Login />,
   },
   {
-    path: Path.RegisterPage,
+    path: Path.registerPage,
     component: <Register />,
   },
 ];
 
 export const authRoutes = [
   {
-    path: Path.AccountPage,
+    path: Path.accountPage,
     component: <Account />,
+  },
+  {
+    path: Path.transactions,
+    component: <TransactionListView />,
   },
 ];
