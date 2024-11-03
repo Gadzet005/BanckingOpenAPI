@@ -3,13 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from banking.models import Transaction, Account
 from .serializers import TransactionSerializer
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from django.utils.dateparse import parse_datetime
-from .models import Transaction, Account
-from .serializers import TransactionSerializer
 
 class UserTransactionsView(APIView):
     permission_classes = [IsAuthenticated]
