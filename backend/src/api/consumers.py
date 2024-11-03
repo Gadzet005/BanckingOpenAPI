@@ -51,6 +51,7 @@ class TransactionConsumer(AsyncWebsocketConsumer):
                 'account_code': event['account_code'],
                 'amount': event['amount'],
                 'type': event['transaction_type'],
+                'subtype': event['transaction_subtype'],
                 'description': event['description'],
                 'balance': event['balance'],
                 'date': event['date']
@@ -58,7 +59,6 @@ class TransactionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_user_from_token(self, token):
-        # Метод для извлечения пользователя из JWT токена
         decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         user_id = decoded_data.get("user_id")
 

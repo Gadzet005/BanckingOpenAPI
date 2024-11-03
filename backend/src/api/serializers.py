@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from banking.models import Transaction, Account, Bank
+from banking.models import Transaction
 
 class TransactionSerializer(serializers.ModelSerializer):
     account_code = serializers.IntegerField(source='account_id.account_code', read_only=True)
@@ -8,4 +8,4 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['id', 'amount', 'type', 'description', 'date', 'account_code', 'bank_name', 'bank_code']
+        fields = ['id', 'amount', 'type', 'subtype', 'description', 'date', 'account_code', 'bank_name', 'bank_code']

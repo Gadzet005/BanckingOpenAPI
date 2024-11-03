@@ -20,18 +20,47 @@ class Account(models.Model):
         constraints = [
             UniqueConstraint(fields=['bank_id', 'account_code'], name='unique_bank_account_code')
         ]
-
 class Transaction(models.Model):
     TYPE_CHOICES = [
         ('income', 'Доход'),
         ('expense', 'Расход'),
     ]
 
-    account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    INCOME_SUBTYPE_CHOICES = [
+        ('salary', 'Зарплата'),
+        ('gift', 'Подарок'),
+        ('investment', 'Инвестиции'),
+        ('transfer', 'Перевод'),
+    ]
+
+    EXPENSE_SUBTYPE_CHOICES = [
+        ('entertainment', 'Развлечения'),
+        ('food', 'Еда'),
+        ('transport', 'Транспорт'),
+        ('utilities', 'Коммунальные услуги'),
+        ('transfer', 'Перевод'),
+    ]
+
+    account_id = models.ForeignKey('Account', on_delete=models.CASCADE)
     amount = models.IntegerField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    subtype = models.CharField(max_length=30, null=True)
     description = models.TextField(blank=True, null=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if self.type == 'income' and self.subtype not in dict(self.INCOME_SUBTYPE_CHOICES):
+            raise ValueError("Invalid subtype for income")
+        elif self.type == 'expense' and self.subtype not in dict(self.EXPENSE_SUBTYPE_CHOICES):
+            raise ValueError("Invalid subtype for expense")
+        super().save(*args, **kwargs)
+
+    def get_subtype_choices(self):
+        if self.type == 'income':
+            return self.INCOME_SUBTYPE_CHOICES
+        elif self.type == 'expense':
+            return self.EXPENSE_SUBTYPE_CHOICES
+        return []
 
 
 class UserBank(models.Model):
