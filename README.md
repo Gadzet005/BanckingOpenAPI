@@ -7,22 +7,13 @@
 -   Собрать докер(не работает):
     `nix run --impure .#container-obp-api.copyToDockerDaemon`
 
-## Backend
+## Docker
 
--   `cd backend`
--   `pip install -r requirements.txt`
--   `cd src`
--   `python manage.py migrate`
--   `python manage.py runserver`
-
-## Frontend
-
--   `cd frontend`
--   Создать `.env` файл (см. `env.example`)
--   `yarn install`
--   `yarn dev`
+-   Создать `.env` файлы в `./backend` и `./frontend` (см. `.env.example`)
+-   `docker compose build`
+-   `docker compose run`
+-   frontend доступен по адресу `localhost:5173`, backend - `localhost:8000`
 
 # TODO
 
--   написать нормальный readme
--   запуск через докер
+-   Добавить описание к проекту
