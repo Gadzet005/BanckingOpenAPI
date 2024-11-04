@@ -15,4 +15,4 @@ services:
         volumes:
             - ./frontend:/frontend
         env_file: "./frontend/.env"
-        command: yarn dev
+        command: yarn dev_docker
