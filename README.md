@@ -11,8 +11,8 @@
 
 -   Создать `.env` файлы в `./backend` и `./frontend` (см. `.env.example`)
 -   `docker compose build`
--   `docker compose run`
--   frontend доступен по адресу `localhost:5173`, backend - `localhost:8000`
+-   `docker compose up`
+-   frontend доступен по адресу `http://localhost:5173`, backend - `http://localhost:8000`
 
 # TODO
 
