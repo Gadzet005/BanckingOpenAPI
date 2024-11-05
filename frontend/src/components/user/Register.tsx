@@ -12,6 +12,7 @@ interface RegisterFormState {
   emailError?: string;
   phoneNumberError?: string;
   passwordError?: string;
+  repeatPasswordError?: string;
 }
 
 export const Register = observer(() => {
@@ -33,8 +34,9 @@ export const Register = observer(() => {
     const passwordRepeat: string = formData.get("passwordRepeat") as string;
 
     if (password !== passwordRepeat) {
-      setState(() => ({
-        formError: "Пароли не совпадают",
+      setState((state) => ({
+        ...state,
+        repeatPasswordError: "Пароли не совпадают.",
       }));
       return;
     }
@@ -93,7 +95,12 @@ export const Register = observer(() => {
             error={state.passwordError !== undefined}
             helperText={state.passwordError}
           />
-          <PasswordField name="passwordRepeat" label="Повторите пароль" />
+          <PasswordField
+            name="passwordRepeat"
+            label="Повторите пароль"
+            error={state.repeatPasswordError !== undefined}
+            helperText={state.repeatPasswordError}
+          />
           <Button
             variant="contained"
             type="submit"
