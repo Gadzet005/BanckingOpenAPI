@@ -1,37 +1,43 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import UntypedToken
-from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from jwt import decode as jwt_decode
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from jwt import ExpiredSignatureError
+
+from urllib.parse import parse_qs
 
 class TransactionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        
         self.group_name = 'transactions'
         
-        headers = dict(
-            (key.decode("utf-8"), value.decode("utf-8"))
-            for key, value in self.scope["headers"]
-        )
-        token = headers.get("authorization")
-
-        if token is None or not token.startswith("Bearer "):
+        query_string = self.scope['query_string'].decode("utf-8")
+        query_params = parse_qs(query_string)
+        
+        token_list = query_params.get("token")
+        if not token_list:
             await self.close()
             return
-
-        token = token.split()[1]
+        
+        token = token_list[0]
 
         try:
             UntypedToken(token)
-        except InvalidToken:
-            await self.close()
+        except ExpiredSignatureError:
+            print("Token has expired.")
+            await self.close(code=4401)
+            return
+        except (InvalidToken, TokenError):
+            print("Invalid token.")
+            await self.close(code=4403)
             return
 
         user = await self.get_user_from_token(token)
         self.user_id = user.id
+
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
@@ -65,4 +71,3 @@ class TransactionConsumer(AsyncWebsocketConsumer):
 
         User = get_user_model()
         return User.objects.get(id=user_id)
-
