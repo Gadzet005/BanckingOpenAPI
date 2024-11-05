@@ -2,13 +2,21 @@ import { backend } from "./core";
 
 interface Result {
     ok: boolean;
-    messages?: string[];
+    message?: string;
+}
+
+interface LoginResult extends Result {}
+
+interface RegisterResult extends Result {
+    emailMessages?: string[];
+    phoneNumberMessages?: string[];
+    passwordMessages?: string[];
 }
 
 export const login = async (
     email: string,
     password: string,
-): Promise<Result> => {
+): Promise<LoginResult> => {
     try {
         const response = await backend.post("/login/", {
             email: email,
@@ -25,12 +33,12 @@ export const login = async (
         if (error.status === 400) {
             return {
                 ok: false,
-                messages: ["Логин или пароль указаны неверно."],
+                message: "Логин или пароль указаны неверно.",
             };
         } else {
             return {
                 ok: false,
-                messages: ["Неизвестная ошибка."],
+                message: "Неизвестная ошибка.",
             };
         }
     }
@@ -40,29 +48,32 @@ export const register = async (
     email: string,
     phone_number: string,
     password: string,
-): Promise<Result> => {
+): Promise<RegisterResult> => {
     try {
-        await backend.post("/register/", {
+        const response = await backend.post("/register/", {
             email: email,
             phone_number: phone_number,
             password: password,
         });
+
+        const access_token = response.data["access"];
+        const refresh_token = response.data["refresh"];
+        localStorage.setItem("access_token", access_token);
+        localStorage.setItem("refresh_token", refresh_token);
 
         return { ok: true };
     } catch (error: any) {
         if (error.status === 400) {
             return {
                 ok: false,
-                messages: [
-                    ...(error.response.data["email"] || []),
-                    ...(error.response.data["phone_number"] || []),
-                    ...(error.response.data["password"] || []),
-                ],
+                emailMessages: error.response.data["email"],
+                phoneNumberMessages: error.response.data["phone_number"],
+                passwordMessages: error.response.data["password"],
             };
         } else {
             return {
                 ok: false,
-                messages: ["Неизвестная ошибка."],
+                message: "Неизвестная ошибка.",
             };
         }
     }

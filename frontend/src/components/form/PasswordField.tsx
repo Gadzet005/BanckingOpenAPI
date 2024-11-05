@@ -1,26 +1,73 @@
-import { FC } from "react";
-import { InputProps } from "./props";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
+import { FC, useState } from "react";
 
-const PasswordField: FC<InputProps> = ({
+interface PasswordFieldProps {
+  name?: string;
+  label?: string;
+  required?: boolean;
+  error?: boolean;
+  helperText?: string;
+}
+
+export const PasswordField: FC<PasswordFieldProps> = ({
   name = "password",
   label = "Пароль",
-  required = true,
+  required = false,
+  error = false,
+  helperText = "",
 }) => {
+  const [isVisible, setIsVisible] = useState(() => false);
+
+  const handleClickShowPassword = () => setIsVisible((isVisible) => !isVisible);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+  };
+
   return (
-    <div className="w-100">
-      <label htmlFor={name} className="form-label">
+    <FormControl variant="outlined">
+      <InputLabel htmlFor={name} required={required} error={error}>
         {label}
-      </label>
-      <input
-        type="password"
-        name={name}
-        autoComplete="current-password"
-        className="form-control"
+      </InputLabel>
+      <OutlinedInput
         id={name}
-        required={required}
+        label={label}
+        name={name}
+        type={isVisible ? "text" : "password"}
+        error={error}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label={isVisible ? "Спрятать пароль" : "Показать пароль"}
+              onClick={handleClickShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              onMouseUp={handleMouseUpPassword}
+              edge="end"
+            >
+              {isVisible ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        }
       />
-    </div>
+      {helperText && (
+        <FormHelperText error={error}>{helperText}</FormHelperText>
+      )}
+    </FormControl>
   );
 };
-
-export default PasswordField;

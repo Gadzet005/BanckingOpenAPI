@@ -1,18 +1,30 @@
 services:
+    redis:
+        build:
+            dockerfile: ./backend/redisDockerfile
+        ports:
+            - "6379:6379"
+        env_file: "./backend/.env"
+        command: redis-server
+
     backend:
         build: ./backend
         ports:
             - "8000:8000"
-        volumes:
-            - ./backend:/backend
         env_file: "./backend/.env"
         command: python src/manage.py runserver 0.0.0.0:8000
+        volumes:
+            - ./backend:/backend
+        depends_on:
+            - redis
 
     frontend:
         build: ./frontend
         ports:
             - "5173:5173"
+        env_file: "./frontend/.env"
         volumes:
             - ./frontend:/frontend
-        env_file: "./frontend/.env"
         command: yarn dev_docker
+        depends_on:
+            - backend

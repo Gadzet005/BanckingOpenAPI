@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../routing/path";
 import { useGetUser } from "../../public/user";
+import { observer } from "mobx-react-lite";
 
-export const Account = () => {
+export const Account = observer(() => {
   const user = useGetUser();
   const navigate = useNavigate();
 
@@ -24,4 +25,4 @@ export const Account = () => {
       </div>
     </div>
   );
-};
+});
