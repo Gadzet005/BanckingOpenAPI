@@ -1,25 +1,30 @@
+import { Alert, Button, TextField } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login, register } from "../../api/user";
-import { Path } from "../../routing/path";
+import { register } from "../../api/user";
 import { useGetUser } from "../../public/user";
-import {
-  EmailField,
-  PasswordField,
-  PhoneField,
-  SubmitButton,
-} from "../form/FormItems";
-import { MessageManager } from "../message/messageManager";
+import { Path } from "../../routing/path";
+import { PasswordField } from "../form/PasswordField";
+
+interface RegisterFormState {
+  formError?: string;
+  emailError?: string;
+  phoneNumberError?: string;
+  passwordError?: string;
+}
 
 export const Register = observer(() => {
   const user = useGetUser();
-  const [messageManager] = useState(() => new MessageManager());
   const navigate = useNavigate();
+
+  const [state, setState] = useState<RegisterFormState>(() => ({}));
+  const [waitingRegistration, setWaitingRegistration] = useState<boolean>(
+    () => false,
+  );
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    messageManager.clearMessages();
 
     const formData = new FormData(event.target as HTMLFormElement);
     const email: string = formData.get("email") as string;
@@ -28,60 +33,75 @@ export const Register = observer(() => {
     const passwordRepeat: string = formData.get("passwordRepeat") as string;
 
     if (password !== passwordRepeat) {
-      messageManager.addError("Пароли не совпадают");
+      setState(() => ({
+        formError: "Пароли не совпадают",
+      }));
       return;
     }
 
-    messageManager.addPrimary("Выполняется регистрация...");
-
+    setWaitingRegistration(() => true);
     register(email, phone_number, password).then((result) => {
-      if (!result["ok"]) {
-        messageManager.clearMessages();
-        result.messages?.forEach((message) => {
-          messageManager.addError(message);
-        });
-        return;
+      setWaitingRegistration(() => false);
+      if (result.ok) {
+        user.tryLogin();
+        navigate(Path.accountPage);
+      } else {
+        setState(() => ({
+          formError: result.message,
+          emailError: result.emailMessages?.[0],
+          phoneNumberError: result.phoneNumberMessages?.[0],
+          passwordError: result.passwordMessages?.[0],
+        }));
       }
-
-      login(email, password).then((loginResult) => {
-        messageManager.clearMessages();
-        if (loginResult["ok"]) {
-          user.tryLogin();
-          navigate(Path.accountPage);
-        } else {
-          loginResult.messages?.forEach((message) => {
-            messageManager.addError(message);
-          });
-        }
-      });
     });
   };
 
   return (
-    <div className="d-flex flex-column">
-      <h1 className="d-flex justify-content-center">Регистрация</h1>
-      <div className="d-flex justify-content-center">
-        <p className="me-2">Уже есть аккаунт?</p>{" "}
-        <Link className="text-decoration-none" to={Path.loginPage}>
-          Страница входа
-        </Link>
-      </div>
+    <div className="d-flex justify-content-center">
+      <div className="col-lg-4 col-md-6 col-sm-8">
+        <div className="text-center">
+          <h1>Регистрация</h1>
+          <span className="fs-6 me-2">Уже есть аккаунт?</span>
+          <Link className="fs-6 text-decoration-none" to={Path.loginPage}>
+            Страница входа
+          </Link>
+        </div>
 
-      <div className="d-flex justify-content-center my-3">
-        <div className="d-grid text-center gap-1">{messageManager.view}</div>
-      </div>
+        <div className="d-flex justify-content-center my-3">
+          {state.formError && <Alert severity="error">{state.formError}</Alert>}
+        </div>
 
-      <div className="d-flex justify-content-center">
-        <form className="d-grid gap-3 col-4" onSubmit={submitHandler}>
-          <EmailField />
-          <PhoneField />
-          <PasswordField name="password" />
+        <form className="d-grid gap-3" onSubmit={submitHandler}>
+          <TextField
+            name="email"
+            variant="outlined"
+            label="Email"
+            type="email"
+            error={state.emailError !== undefined}
+            helperText={state.emailError}
+          />
+          <TextField
+            name="phone_number"
+            variant="outlined"
+            label="Номер телефона"
+            type="tel"
+            error={state.phoneNumberError !== undefined}
+            helperText={state.phoneNumberError}
+          />
+          <PasswordField
+            name="password"
+            error={state.passwordError !== undefined}
+            helperText={state.passwordError}
+          />
           <PasswordField name="passwordRepeat" label="Повторите пароль" />
-          <div className="d-flex justify-content-center">
-            <div className="col-6">
-              <SubmitButton label="Зарегистрироваться" />
-            </div>
-          </div>
+          <Button
+            variant="contained"
+            type="submit"
+            size="large"
+            disabled={waitingRegistration}
+          >
+            Зарегистрироваться
+          </Button>
         </form>
       </div>
     </div>

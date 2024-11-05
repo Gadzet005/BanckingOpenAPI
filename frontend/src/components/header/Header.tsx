@@ -22,7 +22,7 @@ export const Header = observer(() => {
     <div className="navbar nav-underline navbar-expand-lg bg-body-tertiary mb-3">
       <div className="container-fluid">
         <div className="collapse navbar-collapse justify-content-center">
-          <div className="navbar-nav fs-3">{items}</div>
+          <div className="navbar-nav fs-4">{items}</div>
         </div>
       </div>
     </div>
