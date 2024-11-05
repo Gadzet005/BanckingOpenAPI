@@ -10,6 +10,8 @@ from django.conf import settings
 class TransactionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         
+        self.group_name = 'transactions'
+        
         headers = dict(
             (key.decode("utf-8"), value.decode("utf-8"))
             for key, value in self.scope["headers"]
@@ -30,7 +32,6 @@ class TransactionConsumer(AsyncWebsocketConsumer):
 
         user = await self.get_user_from_token(token)
         self.user_id = user.id
-        self.group_name = 'transactions'
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
