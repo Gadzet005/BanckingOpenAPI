@@ -19,7 +19,7 @@ export const Header = observer(() => {
   });
 
   return (
-    <div className="navbar nav-underline navbar-expand-lg bg-body-tertiary mb-4">
+    <div className="navbar nav-underline navbar-expand-lg mb-4 mocha-bg-mantle navbar-dark">
       <div className="container-fluid">
         <div className="collapse navbar-collapse justify-content-center">
           <div className="navbar-nav fs-4">{items}</div>

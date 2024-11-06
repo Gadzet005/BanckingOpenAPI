@@ -16,10 +16,10 @@ export const Account = observer(() => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8 border rounded-3 p-4 bg-light">
+      <div className="col-lg-4 col-md-6 col-sm-8 rounded-4 p-4 mocha-bg-base">
         <Stack spacing={3}>
           <div className="d-flex justify-content-center">
-            <Avatar sx={{ bgcolor: "#28388b", width: 64, height: 64 }}>
+            <Avatar sx={{ bgcolor: "#cba6f7", width: 64, height: 64 }}>
               {user.email![0].toUpperCase()}
             </Avatar>
           </div>
@@ -54,7 +54,7 @@ export const Account = observer(() => {
               color="error"
               size="large"
               onClick={logoutHandler}
-              startIcon={<ExitToAppIcon />}
+              startIcon={<ExitToAppIcon sx={{ color: "#1e1e2e" }} />}
               fullWidth
             >
               Выйти

@@ -5,14 +5,7 @@ import {
 } from "../../public/transaction";
 import { categoryInfo } from "./category";
 import { Avatar } from "@mui/material";
-
-const dateTimeOptions: Intl.DateTimeFormatOptions = {
-  year: "2-digit",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "numeric",
-  minute: "numeric",
-};
+import { formatDate } from "./utils";
 
 export class Transaction implements Transaction {
   id: number;
@@ -36,7 +29,7 @@ export class Transaction implements Transaction {
   }
 
   get formattedDate(): string {
-    return this.date.toLocaleDateString("ru", dateTimeOptions);
+    return formatDate(this.date);
   }
 
   get formattedAmount(): string {
@@ -51,6 +44,8 @@ export class Transaction implements Transaction {
   get categoryIcon() {
     const color = categoryInfo[this.category].color;
     const icon = categoryInfo[this.category].icon;
-    return <Avatar sx={{ bgcolor: color }}>{icon}</Avatar>;
+    return (
+      <Avatar sx={{ bgcolor: color, width: 32, height: 32 }}>{icon}</Avatar>
+    );
   }
 }

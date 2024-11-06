@@ -8,13 +8,15 @@ interface Props {
 export const TransactionView: FC<Props> = ({ transaction }) => {
   const amountView =
     transaction.type === "income" ? (
-      <span className="fs-5 text-success">{transaction.formattedAmount}</span>
+      <span className="fs-5 mocha-text-green">
+        {transaction.formattedAmount}
+      </span>
     ) : (
-      <span className="fs-5 text-danger">{transaction.formattedAmount}</span>
+      <span className="fs-5 mocha-text-red">{transaction.formattedAmount}</span>
     );
 
   return (
-    <li className="list-group-item border border-2 rounded-3 bg-light">
+    <div className="rounded-4 py-2 px-4 mocha-bg-surface0">
       <div className="row d-flex align-items-center">
         <div className="col-2 px-2">
           <div>
@@ -35,6 +37,6 @@ export const TransactionView: FC<Props> = ({ transaction }) => {
           </div>
         </div>
       </div>
-    </li>
+    </div>
   );
 };
