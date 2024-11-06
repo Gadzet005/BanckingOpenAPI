@@ -16,7 +16,9 @@ class AuthView(APIView):
 
     def get(self, request):
         # TODO: Устаревание jwt
-        phone_number = request.GET.get('phone_number', '')
+        phone_number = request.GET.get('phone_number', '').strip()
+        phone_number = '+' + phone_number
+        print(phone_number)
         if phone_number:
             try:
                 user = User.objects.get(phone_number=phone_number)
@@ -36,14 +38,17 @@ class SubscribeView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        token = request.META['HTTP_AUTHORIZATION']
-        user_id = decode(token, "secret", algorithm="HS256")["user_id"]
+        token = request.META['HTTP_AUTHORIZATION'].split()[1]
+        print(token)
+        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         url = self.request.POST.get("url")
+        print(url)
         account_number = self.request.POST.get("account_number")
+        print(type(account_number))
         try:
             account = Account.objects.get(account_number=account_number)
             if user.id != account.user.id:
@@ -61,7 +66,7 @@ class UnsubscribeView(APIView):
 
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION']
-        user_id = decode(token, "secret", algorithm="HS256")["user_id"]
+        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -84,7 +89,7 @@ class AccountInfoView(APIView):
 
     def get(self, request):
         token = request.META['HTTP_AUTHORIZATION']
-        user_id = decode(token, "secret", algorithm="HS256")["user_id"]
+        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -107,7 +112,7 @@ class GetTransactions(APIView):
 
     def get(self, request):
         token = request.META['HTTP_AUTHORIZATION']
-        user_id = decode(token, "secret", algorithm="HS256")["user_id"]
+        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
