@@ -1,32 +1,38 @@
 import { FC, useEffect, useState } from "react";
 import { getTransactions } from "../../api/transactions";
-import { TransactionList } from "./transactionList";
+import { TransactionStore } from "./transactionStore";
 import { observer } from "mobx-react-lite";
+import { LineChart } from "@mui/x-charts";
 
 export const TransactionListView: FC = observer(() => {
-  const [transactionList] = useState(() => new TransactionList());
+  const [store, setStore] = useState<TransactionStore | null>(() => null);
 
   useEffect(() => {
     getTransactions().then((transactions) => {
-      if (!transactionList.inited) {
-        transactionList.init(transactions);
-      }
+      setStore(new TransactionStore(transactions));
     });
   }, []);
 
-  const listView =
-    transactionList.empty && transactionList.inited ? (
-      <p className="fs-4 text-center">Список пуст.</p>
-    ) : (
-      <div className="d-flex justify-content-center">
-        <ul className="col-6 list-group">{transactionList.view}</ul>
-      </div>
-    );
-
   return (
-    <div>
-      <h1 className="text-center mb-5">Список транзакций</h1>
-      {listView}
+    <div className="d-flex flex-wrap">
+      <div className="col-8 px-3">
+        <div className="d-flex justify-content-center">
+          <LineChart
+            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+            series={[
+              {
+                data: [2, 5.5, 2, 8.5, 1.5, 5],
+                area: true,
+              },
+            ]}
+            width={1000}
+            height={500}
+          />
+        </div>
+      </div>
+      <div className="col-4 px-3">
+        <ul className="list-group gap-2">{store?.view}</ul>
+      </div>
     </div>
   );
 });

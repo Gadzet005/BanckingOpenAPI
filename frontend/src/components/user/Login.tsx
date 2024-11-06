@@ -35,7 +35,7 @@ export const Login = observer(() => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8">
+      <div className="col-lg-4 col-md-6 col-sm-8 border rounded-3 p-4 bg-light">
         <div className="text-center">
           <h1>Вход</h1>
           <span className="fs-6 me-2">Нет аккаунта?</span>

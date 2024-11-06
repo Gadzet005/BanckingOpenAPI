@@ -1,32 +1,29 @@
 import { observable, action, makeObservable, computed } from "mobx";
-import { Transaction } from "../../public/transaction";
+import { ITransaction } from "../../public/transaction";
+import { Transaction } from "./transaction";
 import { TransactionView } from "./transactionView";
 
-export class TransactionList {
+export class TransactionStore {
   list: Transaction[] = [];
-  inited: boolean = false;
 
-  constructor() {
+  constructor(transactionList: ITransaction[]) {
+    this.list = transactionList.map(
+      (transaction) => new Transaction(transaction),
+    );
+
     makeObservable(this, {
       list: observable,
-      inited: observable,
       add: action,
-      init: action,
-      empty: computed,
+      isEmpty: computed,
       view: computed,
     });
   }
 
-  init(transactions: Transaction[]) {
-    this.list = transactions;
-    this.inited = true;
+  add(transaction: ITransaction) {
+    this.list.push(new Transaction(transaction));
   }
 
-  add(transaction: Transaction) {
-    this.list.push(transaction);
-  }
-
-  get empty() {
+  get isEmpty(): boolean {
     return this.list.length === 0;
   }
 
