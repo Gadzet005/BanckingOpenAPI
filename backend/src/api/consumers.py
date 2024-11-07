@@ -59,7 +59,6 @@ class TransactionConsumer(AsyncWebsocketConsumer):
                 'amount': event['amount'],
                 'type': event['transaction_type'],
                 'subtype': event['transaction_subtype'],
-                'description': event['description'],
                 'balance': event['balance'],
                 'date': event['date']
             }))
