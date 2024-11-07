@@ -9,6 +9,9 @@ class Bank(models.Model):
     name = models.CharField(max_length=30)
     bank_code = models.IntegerField(unique=True)
     api_url = models.URLField(null=True)
+    
+    def __str__(self):
+        return self.name
 
 class Account(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -45,7 +48,6 @@ class Transaction(models.Model):
     amount = models.IntegerField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     subtype = models.CharField(max_length=30, null=True)
-    description = models.TextField(blank=True, null=True)
     date = models.DateTimeField()
 
     def save(self, *args, **kwargs):
