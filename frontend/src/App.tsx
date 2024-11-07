@@ -31,16 +31,14 @@ const App = () => {
   });
 
   return (
-    <div>
-      <UserContext.Provider value={user}>
-        <BrowserRouter>
-          <ThemeProvider theme={darkTheme}>
-            <Header />
-            <AppRouter />
-          </ThemeProvider>
-        </BrowserRouter>
-      </UserContext.Provider>
-    </div>
+    <UserContext.Provider value={user}>
+      <BrowserRouter>
+        <ThemeProvider theme={darkTheme}>
+          <Header />
+          <AppRouter />
+        </ThemeProvider>
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 };
 

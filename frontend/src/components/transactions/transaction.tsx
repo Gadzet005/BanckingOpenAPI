@@ -5,7 +5,7 @@ import {
 } from "../../public/transaction";
 import { categoryInfo } from "./category";
 import { Avatar } from "@mui/material";
-import { formatDate } from "./utils";
+import { formatDate } from "../../public/utils";
 
 export class Transaction implements Transaction {
   id: number;
