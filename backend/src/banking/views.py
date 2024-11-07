@@ -2,11 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.dateparse import parse_datetime
-from django.http import JsonResponse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-import json
-from .models import Bank, Account, Transaction, UserBank
+from .models import Bank, Account, Transaction
 
 class TransactionWebhookAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -15,17 +13,19 @@ class TransactionWebhookAPIView(APIView):
         bank_code = data.get('bank_code')
         account_code = data.get('account_code')
         amount = data.get('amount')
-        type = data.get('type')
-        description = data.get('description')
         date_str = data.get('date')
-        bank_user_id = data.get('user_id')
         balance = data.get('balance')
-        subtype = data.get('subtype')
+        subtype = data.get('category')
         
-        if not all([bank_code, account_code, amount, type]):
-            return Response({"error": "Нет всех обязательных полей"}, status=status.HTTP_400_BAD_REQUEST)
+        if not all([bank_code, account_code, amount, date_str, balance, subtype]):
+            return Response({"error": f"Нет всех обязательных полей {[bank_code, account_code, amount, date_str, balance, subtype]}"}, status=status.HTTP_400_BAD_REQUEST)
 
         date = parse_datetime(date_str) if date_str else None
+
+        if amount<0:
+            type = 'expense'
+        else:
+            type = 'income'
 
         try:
             bank = Bank.objects.get(bank_code=bank_code)
@@ -33,28 +33,20 @@ class TransactionWebhookAPIView(APIView):
             return Response({"error": "Банк не найден"}, status=status.HTTP_404_NOT_FOUND)
         
         try:
-            userbank = UserBank.objects.get(bank_id=bank, bank_user_id = bank_user_id)
-        except:
-            return Response({"error": "Банк не найден!"}, status=status.HTTP_404_NOT_FOUND)
-        
-        try:
-            account = Account.objects.get(bank_id=bank, account_code=account_code, user_id=userbank.user_id)
+            account = Account.objects.get(bank_id=bank, account_code=account_code)
         except Account.DoesNotExist:
             return Response({"error": "Счет не найден"}, status=status.HTTP_404_NOT_FOUND)
         
-        if Transaction.objects.filter(account_id=account, amount=amount, type=type, description=description, date=date, subtype=subtype).exists():
-            return Response({"error": "Такой объект транзакции уже существует"}, status=status.HTTP_400_BAD_REQUEST)
+        # if Transaction.objects.filter(account_id=account, amount=amount, type=type, date=date, subtype=subtype).exists():
+        #     return Response({"error": "Такой объект транзакции уже существует"}, status=status.HTTP_400_BAD_REQUEST)
 
         transaction = Transaction.objects.create(
             account_id=account,
             amount=amount,
             type=type,
-            description=description,
             date=date,
             subtype=subtype
         )
-        userbank.date = date
-        userbank.save()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'transactions',
@@ -66,7 +58,6 @@ class TransactionWebhookAPIView(APIView):
                 'amount': amount,
                 'transaction_type': type,
                 'transaction_subtype': subtype,
-                'description': description,
                 'balance': balance,
                 'date': date.strftime("%Y-%m-%d %H:%M:%S") if date else None,
                 'user_id': account.user_id.id

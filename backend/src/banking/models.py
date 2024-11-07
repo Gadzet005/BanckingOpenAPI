@@ -65,8 +65,9 @@ class Transaction(models.Model):
         return []
 
 
-class UserBank(models.Model):
+class UserAccount(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    bank_id = models.ForeignKey(Bank, on_delete=models.CASCADE)
-    bank_user_id = models.IntegerField(null=True)
+    account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    access_token = models.CharField(max_length=255)
+    refresh_token = models.CharField(max_length=255)
     date = models.DateField(null=True)

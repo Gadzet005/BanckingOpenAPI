@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bank, Account, Transaction, UserBank
+from .models import Bank, Account, Transaction, UserAccount
 
 class BankAdmin(admin.ModelAdmin):
     list_display = ('name', 'bank_code', 'api_url')
@@ -31,4 +31,4 @@ class TransactionAdmin(admin.ModelAdmin):
 
 admin.site.register(Transaction, TransactionAdmin)
 
-admin.site.register(UserBank)
+admin.site.register(UserAccount)
