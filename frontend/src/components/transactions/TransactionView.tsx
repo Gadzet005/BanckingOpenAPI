@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Transaction } from "./transaction";
+import { Transaction } from "./store/transaction";
 
 interface Props {
   transaction: Transaction;
@@ -17,8 +17,8 @@ export const TransactionView: FC<Props> = ({ transaction }) => {
 
   return (
     <div className="rounded-4 py-2 px-4 mocha-bg-surface0">
-      <div className="row d-flex align-items-center">
-        <div className="col-2 px-2">
+      <div className="row">
+        <div className="col-4 px-2">
           <div>
             <div className="d-flex justify-content-center">
               {transaction.categoryIcon}
@@ -28,7 +28,7 @@ export const TransactionView: FC<Props> = ({ transaction }) => {
             </p>
           </div>
         </div>
-        <div className="col-10 d-flex justify-content-center">
+        <div className="col-8 d-flex justify-content-center">
           <div>
             <div className="d-flex justify-content-center">{amountView}</div>
             <p className="d-flex justify-content-center">

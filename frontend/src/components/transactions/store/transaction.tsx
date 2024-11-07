@@ -1,11 +1,11 @@
+import { Avatar } from "@mui/material";
 import {
   ITransaction,
-  TransactionType,
   TransactionCategory,
-} from "../../public/transaction";
+  TransactionType,
+} from "../../../public/transaction";
+import { formatDate } from "../../../public/utils";
 import { categoryInfo } from "./category";
-import { Avatar } from "@mui/material";
-import { formatDate } from "../../public/utils";
 
 export class Transaction implements Transaction {
   id: number;
@@ -37,15 +37,28 @@ export class Transaction implements Transaction {
     return `${sign}${this.amount.toFixed(2)} ₽`;
   }
 
+  getCategory(): string {
+    let category: string = this.category;
+    if (category === "transfer") {
+      category = this.type === "income" ? "transferIn" : "transferOut";
+    }
+    return category;
+  }
+
+  getCategoryInfo() {
+    return categoryInfo[this.getCategory()];
+  }
+
   get formattedCategory(): string {
-    return categoryInfo[this.category].name;
+    return this.getCategoryInfo().name;
   }
 
   get categoryIcon() {
-    const color = categoryInfo[this.category].color;
-    const icon = categoryInfo[this.category].icon;
+    const info = this.getCategoryInfo();
     return (
-      <Avatar sx={{ bgcolor: color, width: 32, height: 32 }}>{icon}</Avatar>
+      <Avatar sx={{ bgcolor: info.color, width: 32, height: 32 }}>
+        {info.icon}
+      </Avatar>
     );
   }
 }

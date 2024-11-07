@@ -1,21 +1,21 @@
+import PieChartIcon from "@mui/icons-material/PieChart";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+import { Box, Tab, Tabs } from "@mui/material";
+import { PieChart } from "@mui/x-charts";
+import { observer } from "mobx-react-lite";
 import { FC, useEffect, useState } from "react";
 import { getTransactions } from "../../api/transactions";
-import { TransactionStore } from "./transactionStore";
-import { observer } from "mobx-react-lite";
-import { LineChart, PieChart } from "@mui/x-charts";
-import { Box, Stack, Tab, Tabs } from "@mui/material";
-import ShowChartIcon from "@mui/icons-material/ShowChart";
-import PieChartIcon from "@mui/icons-material/PieChart";
+import { TransactionStore } from "./store/transactionStore";
+import { TransactionListView } from "./TransactionListView";
+import { DayLineChart } from "./charts/DayLineChart";
 
-export const TransactionListView: FC = observer(() => {
+export const TransactionsInfo: FC = observer(() => {
   const [store, setStore] = useState<TransactionStore | null>(null);
   const [chartNumber, setChartNumber] = useState(0);
-  const [timeNumber, setTimeNumber] = useState(2);
+  const [timeNumber, setTimeNumber] = useState(4);
 
   useEffect(() => {
     getTransactions().then((transactions) => {
-      console.log(transactions);
-      transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
       setStore(new TransactionStore(transactions));
     });
   }, []);
@@ -31,24 +31,13 @@ export const TransactionListView: FC = observer(() => {
     _: React.SyntheticEvent,
     newNumber: number,
   ) => {
+    store && store.changeState(newNumber);
     setTimeNumber(newNumber);
   };
 
   const chart =
     chartNumber === 0 ? (
-      <LineChart
-        series={[
-          {
-            data: [2, 5.5, 2.5, 8.5, 2, 5, 10, 9, 5, 7],
-            color: "#a6e3a1",
-          },
-          {
-            data: [1, 3.5, 2, 6.5, 1.5, 4, 3, 4, 8, 10],
-            color: "#f38ba8",
-          },
-        ]}
-        grid={{ vertical: true, horizontal: true }}
-      />
+      store && <DayLineChart transactions={store.list} />
     ) : (
       <PieChart
         className="w-75 h-75"
@@ -98,9 +87,7 @@ export const TransactionListView: FC = observer(() => {
         </div>
       </div>
       <div className="col-lg-4 col-md-5 col-sm-6 h-100">
-        <div className="mocha-bg-base rounded-4 p-2 h-100">
-          <Stack spacing={1}>{store?.view}</Stack>
-        </div>
+        {store && <TransactionListView store={store} />}
       </div>
     </Box>
   );

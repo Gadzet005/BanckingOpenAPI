@@ -33,12 +33,12 @@ export const categoryInfo: Record<string, CategoryInfo> = {
   transferOut: {
     name: "Перевод",
     icon: <ReceiptIcon />,
-    color: "#00d4fa",
+    color: "#fb3435",
   },
   transferIn: {
-    name: "Приход",
+    name: "Перевод",
     icon: <ReceiptIcon />,
-    color: "#fb3435",
+    color: "#00d4fa",
   },
   food: {
     name: "Еда",
