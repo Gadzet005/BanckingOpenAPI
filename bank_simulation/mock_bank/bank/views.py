@@ -8,7 +8,7 @@ from jwt import encode, decode
 from requests import post
 
 from .models import User, Subscriptions, Account, Bank, Transaction
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class AuthView(APIView):
@@ -23,10 +23,16 @@ class AuthView(APIView):
             try:
                 user = User.objects.get(phone_number=phone_number)
                 # TODO: Сделать нормальные ключи для шифрования
-                encoded_jwt = encode({"user_id": user.id},
+                encoded_jwt = encode({"user_id": user.id,
+                                      'exp': datetime.now() +
+                                             timedelta(days=1)},
                                      "secret", algorithm="HS256")
+                refresh_token = encode({'user_id': user.id,
+                                        'exp': datetime.now() +
+                                               timedelta(days=30)},
+                                       "secret", algorithm="HS256")
                 return Response(
-                    {"jwt": encoded_jwt},
+                    {"jwt": encoded_jwt, "refresh": refresh_token},
                     status=status.HTTP_200_OK
                 )
             except ObjectDoesNotExist:
@@ -39,14 +45,13 @@ class SubscribeView(APIView):
 
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
-        print(token)
+        print(request.data.get('url'))
         user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         url = self.request.POST.get("url")
-        print(url)
         account_number = self.request.POST.get("account_number")
         print(type(account_number))
         try:
@@ -191,3 +196,25 @@ class MakeTransaction(APIView):
         except ObjectDoesNotExist:
             pass
         return Response(status=status.HTTP_201_CREATED)
+
+
+class RefreshView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh = self.request.POST.get("refresh")
+        if refresh:
+            user_id = decode(refresh, "secret", algorithms=["HS256"])["user_id"]
+            try:
+                user = User.objects.get(id=user_id)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            encoded_jwt = encode({"user_id": user.id,
+                                  'exp': datetime.now() +
+                                         timedelta(days=1)},
+                                 "secret", algorithm="HS256")
+            return Response(
+                    {"jwt": encoded_jwt},
+                    status=status.HTTP_200_OK
+                )
+        return Response(status=status.HTTP_400_BAD_REQUEST)

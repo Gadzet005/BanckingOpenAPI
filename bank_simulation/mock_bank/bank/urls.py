@@ -3,7 +3,8 @@ from .views import (MakeTransaction,
                     AuthView,
                     SubscribeView,
                     UnsubscribeView,
-                    AccountInfoView)
+                    AccountInfoView,
+                    RefreshView)
 
 urlpatterns = [
     path(
@@ -30,5 +31,10 @@ urlpatterns = [
         'getinfo/',
         AccountInfoView.as_view(),
         name='getinfo'
+    ),
+    path(
+        'refresh/',
+        RefreshView.as_view(),
+        name='refresh'
     )
 ]
