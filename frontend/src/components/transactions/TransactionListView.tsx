@@ -43,6 +43,11 @@ export const TransactionListView: FC<TransactionListProps> = observer(
               count={store?.pages}
               color="primary"
               page={page}
+              boundaryCount={0}
+              showFirstButton
+              showLastButton
+              hidePrevButton
+              hideNextButton
             />
           </div>
         </div>

@@ -16,6 +16,14 @@ const darkTheme = createTheme({
       main: "#f38ba8",
       dark: "#f38ba8",
     },
+    success: {
+      main: "#a6e3a1",
+      dark: "#a6e3a1",
+    },
+    info: {
+      main: "#74c7ec",
+      dark: "#74c7ec",
+    },
     text: {
       secondary: "#cdd6f4",
       primary: "#cdd6f4",

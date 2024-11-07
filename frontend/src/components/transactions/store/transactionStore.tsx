@@ -55,10 +55,6 @@ export class TransactionStore {
   }
 
   get list(): Transaction[] {
-    if (this.state === "all") {
-      return this.all;
-    }
-
     const minDate = this.getMinDateForState();
     let list = [];
     for (let i = this.all.length - 1; i >= 0; i--) {
@@ -87,8 +83,8 @@ export class TransactionStore {
   getView(page: number) {
     return this.list
       .slice((page - 1) * this.pageSize, page * this.pageSize)
-      .map((transaction) => (
-        <TransactionView key={transaction.id} transaction={transaction} />
+      .map((transaction, index) => (
+        <TransactionView key={index} transaction={transaction} />
       ));
   }
 
