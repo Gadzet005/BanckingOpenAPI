@@ -72,8 +72,19 @@ export class TransactionStore {
     return Math.ceil(this.list.length / this.pageSize);
   }
 
-  add(transaction: ITransaction) {
-    this.all.push(new Transaction(transaction));
+  add(transaction: ITransaction): boolean {
+    const newElem = new Transaction(transaction);
+
+    if (
+      this.all.length > 0 &&
+      this.all[this.all.length - 1].date > newElem.date
+    ) {
+      console.warn("Try to add outdated transaction.");
+      return false;
+    }
+
+    this.all.push(newElem);
+    return true;
   }
 
   changeState(stateIdx: number) {

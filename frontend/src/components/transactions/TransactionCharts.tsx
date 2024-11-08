@@ -6,6 +6,8 @@ import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 import { TransactionStore } from "./store/transactionStore";
 import { DayLineChart } from "./charts/DayLineChart";
+import { WeekLineChart } from "./charts/WeekLineChart";
+import { MonthLineChart } from "./charts/MonthLineChart";
 
 interface TransactionChartsProps {
   store: TransactionStore;
@@ -14,7 +16,7 @@ interface TransactionChartsProps {
 export const TransactionCharts: FC<TransactionChartsProps> = observer(
   ({ store }) => {
     const [chartNumber, setChartNumber] = useState(0);
-    const [timeNumber, setTimeNumber] = useState(4);
+    const [timeNumber, setTimeNumber] = useState(3);
 
     const handleChangeChartNumber = (
       _: React.SyntheticEvent,
@@ -31,9 +33,24 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
       setTimeNumber(newNumber);
     };
 
+    const getLineChart = () => {
+      if (!store) {
+        return null;
+      }
+
+      if (timeNumber == 4) {
+        return <DayLineChart transactions={store.list} />;
+      } else if (timeNumber == 3) {
+        return <WeekLineChart transactions={store.list} />;
+      } else if (timeNumber == 2) {
+        return <MonthLineChart transactions={store.list} />;
+      }
+      return null;
+    };
+
     const chart =
       chartNumber === 0 ? (
-        store && <DayLineChart transactions={store.list} />
+        getLineChart()
       ) : (
         <PieChart
           className="w-75 h-75"

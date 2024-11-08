@@ -1,17 +1,20 @@
-import { LineChart } from "@mui/x-charts";
 import { FC } from "react";
-import { Transaction } from "../store/transaction";
+import { ChartProps } from "./chartProps";
+import { BaseLineChart } from "./BaseLineChart";
 
-interface LineChartProps {
-  transactions: Transaction[];
+const axisValues = new Array<number>(24);
+for (let i = 0; i < 24; i++) {
+  axisValues[i] = i;
 }
 
-export const DayLineChart: FC<LineChartProps> = ({ transactions }) => {
-  const axisValues = new Array<number>(24);
-  for (let i = 0; i < 24; i++) {
-    axisValues[i] = i;
+function numToTime(num: number): string {
+  if (!axisValues.includes(num)) {
+    return "";
   }
+  return (num < 10 ? "0" : "") + num.toString() + ":00";
+}
 
+export const DayLineChart: FC<ChartProps> = ({ transactions }) => {
   const expenseCount = new Array<number>(24).fill(0);
   const incomeCount = new Array<number>(24).fill(0);
 
@@ -25,29 +28,12 @@ export const DayLineChart: FC<LineChartProps> = ({ transactions }) => {
   });
 
   return (
-    <LineChart
-      xAxis={[
-        {
-          data: axisValues,
-          label: "Время",
-          valueFormatter: (value) => `${value}:00`,
-        },
-      ]}
-      series={[
-        {
-          label: "Доходы",
-          data: incomeCount,
-          color: "#a6e3a1",
-          valueFormatter: (value) => `${value}₽`,
-        },
-        {
-          label: "Расходы",
-          data: expenseCount,
-          color: "#f38ba8",
-          valueFormatter: (value) => `${value}₽`,
-        },
-      ]}
-      grid={{ vertical: true, horizontal: true }}
+    <BaseLineChart
+      axisData={axisValues}
+      axisFormatter={(num) => numToTime(num)}
+      axisLabel="Время"
+      expensesData={expenseCount}
+      incomesData={incomeCount}
     />
   );
 };

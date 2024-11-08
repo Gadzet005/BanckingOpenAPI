@@ -37,8 +37,10 @@ export const TransactionsInfo: FC = observer(() => {
       date: new Date(data.date),
     };
 
-    store.add(transaction);
-    setIsNotificationOpened(true);
+    const res = store.add(transaction);
+    if (res) {
+      setIsNotificationOpened(true);
+    }
   };
 
   const handleNotificationClose = (
@@ -54,7 +56,7 @@ export const TransactionsInfo: FC = observer(() => {
 
   useEffect(() => {
     getTransactions().then((transactions) => {
-      setStore(new TransactionStore(transactions));
+      setStore(new TransactionStore(transactions, "week"));
     });
   }, []);
 
