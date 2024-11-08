@@ -1,21 +1,9 @@
 import { FC } from "react";
 import { ChartProps } from "./chartProps";
 import { BaseLineChart } from "./BaseLineChart";
+import { weekDays } from "./common";
 
-const dayOfWeek = [
-  "Понедельник",
-  "Вторник",
-  "Среда",
-  "Четверг",
-  "Пятница",
-  "Суббота",
-  "Воскресенье",
-];
-
-const axisValues: Array<number> = [];
-for (let i = 0; i < 7; i++) {
-  axisValues.push(i);
-}
+const axisValues: Array<number> = [...Array(7).keys()];
 
 export const WeekLineChart: FC<ChartProps> = ({ transactions }) => {
   const expenseCount = new Array<number>(7).fill(0);
@@ -36,7 +24,7 @@ export const WeekLineChart: FC<ChartProps> = ({ transactions }) => {
     <BaseLineChart
       axisData={axisValues}
       axisLabel="День недели"
-      axisFormatter={(num) => (axisValues.includes(num) ? dayOfWeek[num] : "")}
+      axisFormatter={(num) => (Number.isInteger(num) ? weekDays[num] : "")}
       expensesData={expenseCount}
       incomesData={incomeCount}
     />

@@ -1,13 +1,15 @@
 import PieChartIcon from "@mui/icons-material/PieChart";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { Box, Tab, Tabs } from "@mui/material";
-import { PieChart } from "@mui/x-charts";
 import { observer } from "mobx-react-lite";
 import { FC, useState } from "react";
 import { TransactionStore } from "./store/transactionStore";
 import { DayLineChart } from "./charts/DayLineChart";
 import { WeekLineChart } from "./charts/WeekLineChart";
 import { MonthLineChart } from "./charts/MonthLineChart";
+import { YearLineChart } from "./charts/YearLineChart";
+import { TotalLineChart } from "./charts/TotalLineChart";
+import { CategoryPieChart } from "./charts/CategoryPieChart";
 
 interface TransactionChartsProps {
   store: TransactionStore;
@@ -44,26 +46,17 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
         return <WeekLineChart transactions={store.list} />;
       } else if (timeNumber == 2) {
         return <MonthLineChart transactions={store.list} />;
+      } else if (timeNumber == 1) {
+        return <YearLineChart transactions={store.list} />;
       }
-      return null;
+      return <TotalLineChart transactions={store.list} />;
     };
 
     const chart =
       chartNumber === 0 ? (
         getLineChart()
       ) : (
-        <PieChart
-          className="w-75 h-75"
-          series={[
-            {
-              data: [
-                { id: 0, value: 10, label: "series A" },
-                { id: 1, value: 15, label: "series B" },
-                { id: 2, value: 20, label: "series C" },
-              ],
-            },
-          ]}
-        />
+        <CategoryPieChart transactions={store.list} />
       );
 
     return (

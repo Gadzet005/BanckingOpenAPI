@@ -2,13 +2,10 @@ import { FC } from "react";
 import { ChartProps } from "./chartProps";
 import { BaseLineChart } from "./BaseLineChart";
 
-const axisValues = new Array<number>(24);
-for (let i = 0; i < 24; i++) {
-  axisValues[i] = i;
-}
+const axisValues = [...Array(24).keys()];
 
 function numToTime(num: number): string {
-  if (!axisValues.includes(num)) {
+  if (!Number.isInteger(num)) {
     return "";
   }
   return (num < 10 ? "0" : "") + num.toString() + ":00";
