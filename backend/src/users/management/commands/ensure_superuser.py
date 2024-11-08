@@ -5,15 +5,9 @@ from users.models import CustomUser
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        email = os.getenv("DJANGO_SUPERUSER_EMAIL")
-        phone_number = os.getenv("DJANGO_SUPERUSER_PHONE_NUMBER")
-        password = os.getenv("DJANGO_SUPERUSER_PASSWORD")
-
-        if not phone_number or not password or not email:
-            raise CommandError(
-                "DJANGO_SUPERUSER_PHONE_NUMBER, DJANGO_SUPERUSER_PASSWORD, "
-                "and DJANGO_SUPERUSER_EMAIL environment variables must be set."
-            )
+        email = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@admin.com")
+        phone_number = os.getenv("DJANGO_SUPERUSER_PHONE_NUMBER", "+78934562345")
+        password = os.getenv("DJANGO_SUPERUSER_PASSWORD", "1234")
 
         try:
             CustomUser.objects.create_superuser(
