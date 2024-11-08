@@ -18,7 +18,6 @@ class AuthView(APIView):
         # TODO: Устаревание jwt
         phone_number = request.GET.get('phone_number', '').strip()
         phone_number = '+' + phone_number
-        print(phone_number)
         if phone_number:
             try:
                 user = User.objects.get(phone_number=phone_number)
@@ -170,29 +169,31 @@ class MakeTransaction(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         date = datetime.now()
         try:
-            url1 = Subscriptions.objects.get(account_id=account_from_obj)
+            url1 = Subscriptions.objects.filter(account_id=account_from_obj)
             data = {
                 "account_code": account_from_obj.id,
-                "bank_name": bank_from.id,
-                "amount": -amount,
+                "bank_name": bank_from_obj.id,
+                "amount": -int(amount),
                 "category": category,
                 "user_id": account_from_obj.user.id,
-                "date": date
+                "date": str(date)
             }
-            request1 = post(url1.url, data)
+            for i in url1:
+                request1 = post(i.url, json=data)
         except ObjectDoesNotExist:
             pass
         try:
-            url2 = Subscriptions.objects.get(account_id=account_to_obj)
+            url2 = Subscriptions.objects.filter(account_id=account_to_obj)
             data = {
                 "account_code": account_to_obj.id,
-                "bank_name": bank_to.id,
-                "amount": amount,
+                "bank_name": bank_to_obj.id,
+                "amount": int(amount),
                 "category": category,
                 "user_id": account_to_obj.user.id,
-                "date": date
+                "date": str(date)
             }
-            request1 = post(url2.url, data)
+            for i in url2:
+                request2 = post(i.url, json=data)
         except ObjectDoesNotExist:
             pass
         return Response(status=status.HTTP_201_CREATED)
