@@ -60,7 +60,7 @@ class AuthView(APIView):
                                 "date": transaction.date_time.isoformat(),
                                 "category": transaction.category,
                             })
-                        subscription = Subscriptions.objects.create(account_id=account, url='backend:8000/webhook/transaction/')
+                        subscription = Subscriptions.objects.create(account_id=account, url='http://backend:8000/webhook/transaction/')
                         accounts_data[account.account_number] = transactions_list
 
                     return Response(
@@ -193,7 +193,7 @@ class MakeTransaction(APIView):
             bank_from_obj = Bank.objects.get(name=bank_from)
             bank_to_obj = Bank.objects.get(name=bank_to)
         except ObjectDoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": f"{[account_from, account_to]}]"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             with transaction.atomic():
                 Transaction.objects.create(
@@ -212,31 +212,35 @@ class MakeTransaction(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         date = datetime.now()
         try:
-            url1 = Subscriptions.objects.filter(account_id=account_from_obj)
+            #url1 = Subscriptions.objects.filter(account_id=account_from_obj)
             data = {
-                "account_code": account_from_obj.id,
-                "bank_name": bank_from_obj.id,
+                "account_code": account_from_obj.account_number,
+                "bank_code": bank_from_obj.bank_code,
                 "amount": -int(amount),
                 "category": category,
                 "user_id": account_from_obj.user.id,
-                "date": str(date)
+                "date": str(date),
+                "balance": int(account_from_obj.balance)
             }
-            for i in url1:
-                request1 = post(i.url, data=data)
+            # for i in url1:
+            #     request1 = post(i.url, data=data)
+            request1 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
         try:
-            url2 = Subscriptions.objects.filter(account_id=account_to_obj)
+            #url2 = Subscriptions.objects.filter(account_id=account_to_obj)
             data = {
-                "account_code": account_to_obj.id,
-                "bank_name": bank_to_obj.id,
+                "account_code": account_to_obj.account_number,
+                "bank_code": bank_to_obj.bank_code,
                 "amount": int(amount),
                 "category": category,
                 "user_id": account_to_obj.user.id,
-                "date": str(date)
+                "date": str(date),
+                "balance": int(account_to_obj.balance)
             }
-            for i in url2:
-                request2 = post(i.url, data=data)
+            # for i in url2:
+            #     request2 = post(i.url, data=data)
+            request2 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
         return Response(status=status.HTTP_201_CREATED)

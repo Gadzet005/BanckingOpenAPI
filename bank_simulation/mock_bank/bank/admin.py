@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Transaction, Subscriptions
+from .models import Transaction, Subscriptions, Bank, Account, User
 from django.core.exceptions import ObjectDoesNotExist
 from requests import post
 
@@ -45,3 +45,9 @@ class TransactionAdmin(admin.ModelAdmin):
         except ObjectDoesNotExist:
             pass
         super().save_model(request, obj, form, change)
+
+
+admin.site.register(Bank)
+admin.site.register(Account)
+admin.site.register(User)
+admin.site.register(Subscriptions)
