@@ -8,11 +8,14 @@ TYPES_OF_TRANSACTION = [
     ('transport', 'Транспорт'),
     ('utilities', 'Коммунальные услуги'),
     ('transfer', 'Перевод'),
+    ('salary', 'Зарплата'),
+    ('investment', 'Инвестиции'),
 ]
 
 
 class Bank(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    bank_code = models.IntegerField(null=True, unique=True)
 
 
 class User(models.Model):
