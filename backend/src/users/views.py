@@ -12,11 +12,6 @@ from banking.models import Bank, Account, Transaction, UserAccount
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        response = requests.get("http://bank_simulation:5000/", timeout=3)
-        print(response.status_code)
-        return Response(status=status.HTTP_200_OK)
-
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -41,9 +36,14 @@ class RegisterView(APIView):
                         refresh_token = response_data.get("refresh")
                         accounts_data = response_data.get("accounts", {})
                         print(accounts_data)
-                        useraccount = UserAccount.objects.create(user_id=user,
-                                                                 access_token = encoded_jwt,
-                                                                 refresh_token = refresh_token)
+                        try:
+                            useraccount = UserAccount.objects.get(user_id=user)
+                            useraccount.access_token = encoded_jwt
+                            useraccount.refresh_token = refresh_token
+                        except:
+                            useraccount = UserAccount.objects.create(user_id=user,
+                                                                    access_token = encoded_jwt,
+                                                                    refresh_token = refresh_token)
                         for account_code, transactions in accounts_data.items():
                             
                             print(account_code, transactions)
@@ -91,6 +91,8 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
     
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
