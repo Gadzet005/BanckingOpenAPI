@@ -7,6 +7,8 @@ interface BaseLineChartProps {
   axisFormatter?: (value: number) => string;
   expensesData: number[];
   incomesData: number[];
+  min?: number;
+  max?: number;
 }
 
 export const BaseLineChart: FC<BaseLineChartProps> = ({
@@ -15,6 +17,8 @@ export const BaseLineChart: FC<BaseLineChartProps> = ({
   expensesData,
   incomesData,
   axisFormatter = (num) => num.toString(),
+  min,
+  max,
 }) => {
   return (
     <LineChart
@@ -23,6 +27,8 @@ export const BaseLineChart: FC<BaseLineChartProps> = ({
           data: axisData,
           label: axisLabel,
           valueFormatter: axisFormatter,
+          min: min,
+          max: max,
         },
       ]}
       series={[

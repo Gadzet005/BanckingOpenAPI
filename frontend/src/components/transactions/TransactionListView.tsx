@@ -30,8 +30,11 @@ export const TransactionListView: FC<TransactionListProps> = observer(
     return (
       <div className="mocha-bg-base rounded-4 h-100">
         <div className="h-100 d-flex flex-column justify-content-between">
-          <div className="mocha-bg-mantle rounded-top-4 mb-3 fs-2 text-center py-1">
-            {totalView}
+          <div className="mocha-bg-mantle rounded-top-4 mb-3 py-1">
+            <div className="d-flex justify-content-between align-items-center px-4">
+              <p className="fs-4">Всего: {store.list.length}</p>
+              <div className="fs-2">{totalView}</div>
+            </div>
           </div>
           <Stack className="px-2 h-100" spacing={1}>
             {store?.getView(page)}

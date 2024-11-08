@@ -15,7 +15,7 @@ services:
         env_file: "./backend/.env"
         command: redis-server
 
-    bank_simulation:
+    bank:
         build: ./bank_simulation
         env_file: ./bank_simulation/.env
         ports:
@@ -42,7 +42,7 @@ services:
             - ./backend:/backend
         depends_on:
             - redis
-            - bank_simulation
+            - bank
 
     frontend:
         build: ./frontend
