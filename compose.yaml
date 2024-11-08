@@ -17,10 +17,12 @@ services:
 
     bank_simulation:
         build: ./bank_simulation
+        env_file: ./bank_simulation/.env
         ports:
             - "5000:5000"
         command: sh -c "
             python mock_bank/manage.py migrate &&
+            python mock_bank/manage.py ensure_superuser &&
             python mock_bank/manage.py runserver 0.0.0.0:5000"
         volumes:
             - ./bank_simulation:/bank_simulation
@@ -32,7 +34,10 @@ services:
         ports:
             - "8000:8000"
         env_file: "./backend/.env"
-        command: python src/manage.py runserver 0.0.0.0:8000
+        command: sh -c "
+            python src/manage.py migrate &&
+            python src/manage.py ensure_superuser &&
+            python src/manage.py runserver 0.0.0.0:8000"
         volumes:
             - ./backend:/backend
         depends_on:
