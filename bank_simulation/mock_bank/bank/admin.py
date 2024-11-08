@@ -27,7 +27,7 @@ class TransactionAdmin(admin.ModelAdmin):
                 "date": str(obj.date_time)
             }
             for i in url1:
-                request1 = post(i.url, json=data)
+                request1 = post(i.url, data=data)
         except ObjectDoesNotExist:
             pass
         try:
@@ -41,7 +41,7 @@ class TransactionAdmin(admin.ModelAdmin):
                 "date": str(obj.date_time)
             }
             for i in url2:
-                request2 = post(i.url, json=data)
+                request2 = post(i.url, data=data)
         except ObjectDoesNotExist:
             pass
         super().save_model(request, obj, form, change)

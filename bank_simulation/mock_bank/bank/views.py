@@ -179,7 +179,7 @@ class MakeTransaction(APIView):
                 "date": str(date)
             }
             for i in url1:
-                request1 = post(i.url, json=data)
+                request1 = post(i.url, data=data)
         except ObjectDoesNotExist:
             pass
         try:
@@ -193,7 +193,7 @@ class MakeTransaction(APIView):
                 "date": str(date)
             }
             for i in url2:
-                request2 = post(i.url, json=data)
+                request2 = post(i.url, data=data)
         except ObjectDoesNotExist:
             pass
         return Response(status=status.HTTP_201_CREATED)
