@@ -10,34 +10,77 @@ from requests import post
 from .models import User, Subscriptions, Account, Bank, Transaction
 from datetime import datetime, timedelta
 
+import json
+
 
 class AuthView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        # TODO: Устаревание jwt
-        phone_number = request.GET.get('phone_number', '').strip()
-        phone_number = '+' + phone_number
-        print(phone_number)
+    def post(self, request):
+        phone_number = json.loads(request.body).get('phone_number')
+        is_new = json.loads(request.body).get('new') == 'True'
+        bank_code = json.loads(request.body).get('bank_code')
+
         if phone_number:
             try:
                 user = User.objects.get(phone_number=phone_number)
-                # TODO: Сделать нормальные ключи для шифрования
-                encoded_jwt = encode({"user_id": user.id,
-                                      'exp': datetime.now() +
-                                             timedelta(days=1)},
-                                     "secret", algorithm="HS256")
-                refresh_token = encode({'user_id': user.id,
-                                        'exp': datetime.now() +
-                                               timedelta(days=30)},
-                                       "secret", algorithm="HS256")
+
+                encoded_jwt = encode({
+                    "user_id": user.id,
+                    'exp': datetime.now() + timedelta(days=1)
+                }, "secret", algorithm="HS256")
+
+                refresh_token = encode({
+                    'user_id': user.id,
+                    'exp': datetime.now() + timedelta(days=30)
+                }, "secret", algorithm="HS256")
+
+                if is_new:
+                    bank = Bank.objects.get(bank_code=bank_code)
+                    accounts_data = {}
+                    accounts = Account.objects.filter(user=user, bank=bank)
+
+                    for account in accounts:
+                        transactions_list = []
+
+                        transactions = Transaction.objects.filter(
+                            account_from_id=account
+                        ) | Transaction.objects.filter(
+                            account_to_id=account
+                        )
+
+                        for transaction in transactions:
+                            if transaction.account_from_id == account:
+                                amount = -transaction.quantity
+                            else:
+                                amount = transaction.quantity
+
+                            transactions_list.append({
+                                "amount": int(amount),
+                                "date": transaction.date_time.isoformat(),
+                                "category": transaction.category,
+                            })
+                        subscription = Subscriptions.objects.create(account_id=account, url='backend:8000/webhook/transaction/')
+                        accounts_data[account.account_number] = transactions_list
+
+                    return Response(
+                        {
+                            "jwt": encoded_jwt,
+                            "refresh": refresh_token,
+                            "accounts": accounts_data
+                        },
+                        status=status.HTTP_200_OK
+                    )
+
                 return Response(
                     {"jwt": encoded_jwt, "refresh": refresh_token},
                     status=status.HTTP_200_OK
                 )
+
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"error": f"{phone_number}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SubscribeView(APIView):

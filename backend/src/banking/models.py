@@ -23,6 +23,9 @@ class Account(models.Model):
         constraints = [
             UniqueConstraint(fields=['bank_id', 'account_code'], name='unique_bank_account_code')
         ]
+    def __str__(self):
+        return str(self.account_code)
+    
 class Transaction(models.Model):
     TYPE_CHOICES = [
         ('income', 'Доход'),
@@ -67,7 +70,6 @@ class Transaction(models.Model):
 
 class UserAccount(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
     access_token = models.CharField(max_length=255)
     refresh_token = models.CharField(max_length=255)
     date = models.DateField(null=True)
