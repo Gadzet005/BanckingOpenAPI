@@ -35,17 +35,21 @@ export const Login = observer(() => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8">
+      <div className="col-lg-4 col-md-6 col-sm-8 rounded-4 p-4 mocha-bg-base mocha-border">
         <div className="text-center">
           <h1>Вход</h1>
           <span className="fs-6 me-2">Нет аккаунта?</span>
-          <Link className="fs-6 text-decoration-none" to={Path.registerPage}>
+          <Link className="fs-6" to={Path.registerPage}>
             Страница регистрации
           </Link>
         </div>
 
         <div className="d-flex justify-content-center my-3">
-          {formError && <Alert severity="error">{formError}</Alert>}
+          {formError && (
+            <Alert severity="error" variant="filled">
+              {formError}
+            </Alert>
+          )}
         </div>
 
         <form className="d-grid gap-3" onSubmit={submitHandler}>

@@ -60,11 +60,11 @@ export const Register = observer(() => {
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8">
+      <div className="col-lg-4 col-md-6 col-sm-8 rounded-4 p-4 mocha-bg-base">
         <div className="text-center">
           <h1>Регистрация</h1>
           <span className="fs-6 me-2">Уже есть аккаунт?</span>
-          <Link className="fs-6 text-decoration-none" to={Path.loginPage}>
+          <Link className="fs-6" to={Path.loginPage}>
             Страница входа
           </Link>
         </div>

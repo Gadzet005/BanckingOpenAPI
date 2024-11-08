@@ -13,9 +13,66 @@ body {
   width: 100vw;
   height: 100vh;
   font-family: "Roboto";
+  background-color: #11111b;
 }
 
 .root {
   width: 100vw;
   height: 100vh;
+}
+
+.mocha-bg-base {
+  background-color: #1e1e2e;
+}
+
+.mocha-bg-blue {
+  background-color: #89b4fa;
+}
+
+.mocha-bg-crust {
+  background-color: #11111b;
+}
+
+.mocha-bg-mantle {
+  background-color: #181825;
+}
+
+.mocha-bg-surface0 {
+  background-color: #313244;
+}
+
+.mocha-text {
+  color: #cdd6f4;
+}
+
+.mocha-text-blue {
+  color: #89b4fa;
+}
+
+.mocha-text-crust {
+  color: #11111b;
+}
+
+.mocha-text-green {
+  color: #a6e3a1;
+}
+
+.mocha-text-red {
+  color: #f38ba8;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
+  color: #cdd6f4;
+}
+
+a {
+  color: #89b4fa;
+  text-decoration: none;
 }

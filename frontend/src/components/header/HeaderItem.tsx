@@ -25,7 +25,7 @@ export const HeaderItem: FC<Props> = ({ name, path, related = [] }) => {
   }
 
   return (
-    <Link className="nav-link mx-3" to={path}>
+    <Link className="mocha-text nav-link mx-3" to={path}>
       {name}
     </Link>
   );

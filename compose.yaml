@@ -1,11 +1,31 @@
 services:
+    postgres:
+        image: postgres:17.0-alpine3.20
+        environment:
+            POSTGRES_DB: "name"
+            POSTGRES_USER: "user"
+            POSTGRES_PASSWORD: "password"
+        ports:
+            - "5432:5432"
+
     redis:
-        build:
-            dockerfile: ./backend/redisDockerfile
+        image: redis:7.4-alpine
         ports:
             - "6379:6379"
         env_file: "./backend/.env"
         command: redis-server
+
+    bank_simulation:
+        build: ./bank_simulation
+        ports:
+            - "5000:5000"
+        command: sh -c "
+            python mock_bank/manage.py migrate &&
+            python mock_bank/manage.py runserver 0.0.0.0:5000"
+        volumes:
+            - ./bank_simulation:/bank_simulation
+        depends_on:
+            - postgres
 
     backend:
         build: ./backend
@@ -17,6 +37,7 @@ services:
             - ./backend:/backend
         depends_on:
             - redis
+            - bank_simulation
 
     frontend:
         build: ./frontend

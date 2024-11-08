@@ -23,7 +23,7 @@ export const headerList: Array<HeaderListElem> = [
         type: HeaderElemType.onylForAuth,
     },
     {
-        name: "Личный кабинет",
+        name: "Профиль",
         path: Path.accountPage,
         type: HeaderElemType.onylForAuth,
     },
