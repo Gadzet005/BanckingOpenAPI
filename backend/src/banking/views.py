@@ -26,7 +26,7 @@ class TransactionWebhookAPIView(APIView):
             type = 'expense'
         else:
             type = 'income'
-
+        amount = abs(amount)
         try:
             bank = Bank.objects.get(bank_code=bank_code)
         except Bank.DoesNotExist:
@@ -39,14 +39,17 @@ class TransactionWebhookAPIView(APIView):
         
         # if Transaction.objects.filter(account_id=account, amount=amount, type=type, date=date, subtype=subtype).exists():
         #     return Response({"error": "Такой объект транзакции уже существует"}, status=status.HTTP_400_BAD_REQUEST)
-
-        transaction = Transaction.objects.create(
-            account_id=account,
-            amount=amount,
-            type=type,
-            date=date,
-            subtype=subtype
-        )
+        try:
+            transaction = Transaction.objects.create(
+                account_id=account,
+                amount=amount,
+                type=type,
+                date=date,
+                subtype=subtype
+            )
+        except:
+            return Response({"error": "Невозможно создать транзакцию"}, status=status.HTTP_400_BAD_REQUEST)
+        
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'transactions',
