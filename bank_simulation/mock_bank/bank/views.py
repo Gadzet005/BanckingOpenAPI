@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from jwt import encode, decode, ExpiredSignatureError
 from requests import post
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from .models import User, Subscriptions, Account, Bank, Transaction
 from datetime import datetime, timedelta
@@ -83,8 +85,40 @@ class AuthView(APIView):
         return Response({"error": f"{phone_number}"}, status=status.HTTP_400_BAD_REQUEST)
 
 class SubscribeView(APIView):
+
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="",
+        operation_summary="Обработчик для подписки на оповещения о транзакциях",
+
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['url', 'account_number'],
+            properties={
+                'url': openapi.Schema(type=openapi.TYPE_STRING),
+                'account_number': openapi.Schema(type=openapi.TYPE_INTEGER)
+            },
+        ),
+        responses={
+            "201": openapi.Response(
+                description="Возвращается в случае создания "
+                            "записи в таблице подписок",
+            ),
+            "401": openapi.Response(
+                description="Возвращается при некорректном или "
+                            "просроченном токене",
+            ),
+            "403": openapi.Response(
+                description="Возвращается, если пользователь не "
+                            "является владельцем счета",
+            ),
+            "404": openapi.Response(
+                description="Возвращается при передаче неправильных параметров",
+            ),
+        },
+        tags = ['handlerы for webhook']
+    )
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
         try:
@@ -97,7 +131,6 @@ class SubscribeView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         url = self.request.POST.get("url")
         account_number = self.request.POST.get("account_number")
-        print(type(account_number))
         try:
             account = Account.objects.get(account_number=account_number)
             if user.id != account.user.id:
@@ -113,6 +146,36 @@ class SubscribeView(APIView):
 class UnsubscribeView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="",
+        operation_summary="Обработчик для отписки от оповещенияй о транзакциях",
+
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['url'],
+            properties={
+                'account_number': openapi.Schema(type=openapi.TYPE_INTEGER)
+            },
+        ),
+        responses={
+            "201": openapi.Response(
+                description="Возвращается в случае удаления "
+                            "записи в таблице подписок",
+            ),
+            "401": openapi.Response(
+                description="Возвращается при некорректном или "
+                            "просроченном токене",
+            ),
+            "403": openapi.Response(
+                description="Возвращается, если пользователь не "
+                            "является владельцем счета",
+            ),
+            "404": openapi.Response(
+                description="Возвращается при передаче неправильных параметров",
+            ),
+        },
+        tags=['handlerы for webhook']
+    )
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
         try:
