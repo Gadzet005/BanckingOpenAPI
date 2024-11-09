@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from jwt import encode, decode
+from jwt import encode, decode, ExpiredSignatureError
 from requests import post
 
 from .models import User, Subscriptions, Account, Bank, Transaction
@@ -27,12 +27,12 @@ class AuthView(APIView):
 
                 encoded_jwt = encode({
                     "user_id": user.id,
-                    'exp': datetime.now(UTC) + timedelta(seconds=1)
+                    'exp': datetime.utcnow() + timedelta(days=1)
                 }, "secret", algorithm="HS256")
 
                 refresh_token = encode({
                     'user_id': user.id,
-                    'exp': datetime.now(UTC) + timedelta(days=30)
+                    'exp': datetime.utcnow() + timedelta(days=30)
                 }, "secret", algorithm="HS256")
 
                 if is_new:
@@ -87,8 +87,10 @@ class SubscribeView(APIView):
 
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
-        print(request.data.get('url'))
-        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        except ExpiredSignatureError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -113,7 +115,10 @@ class UnsubscribeView(APIView):
 
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
-        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        except ExpiredSignatureError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -136,7 +141,10 @@ class AccountInfoView(APIView):
 
     def get(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
-        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        except ExpiredSignatureError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -159,7 +167,10 @@ class GetTransactions(APIView):
 
     def get(self, request):
         token = request.META['HTTP_AUTHORIZATION'].split()[1]
-        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        except ExpiredSignatureError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
@@ -250,13 +261,16 @@ class RefreshView(APIView):
     def post(self, request):
         refresh = self.request.POST.get("refresh")
         if refresh:
-            user_id = decode(refresh, "secret", algorithms=["HS256"])["user_id"]
+            try:
+                user_id = decode(refresh, "secret", algorithms=["HS256"])["user_id"]
+            except ExpiredSignatureError:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
             try:
                 user = User.objects.get(id=user_id)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             encoded_jwt = encode({"user_id": user.id,
-                                  'exp': datetime.now(UTC) +
+                                  'exp': datetime.utcnow() +
                                          timedelta(days=1)},
                                  "secret", algorithm="HS256")
             return Response(
@@ -270,7 +284,10 @@ class CreateAccount(APIView):
 
     def post(self, request):
         token = request.META['HTTP_AUTHORIZATION']
-        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        except ExpiredSignatureError:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
