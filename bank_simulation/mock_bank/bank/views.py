@@ -264,3 +264,34 @@ class RefreshView(APIView):
                     status=status.HTTP_200_OK
                 )
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class CreateAccount(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.META['HTTP_AUTHORIZATION']
+        user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
+        try:
+            user = User.objects.get(id=user_id)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        account_code = int(self.request.POST.get("account_code"))
+        bank_code = int(self.request.POST.get("bank_code"))
+        balance = float(self.request.POST.get("balance"))
+        try:
+            bank = Bank.objects.get(bank_code=bank_code)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if Account.objects.exists(account_number=account_code):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            account = Account.create(account_number=account_code, bank=bank, user=user, balance=balance)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        data = {
+                "account_code": account.account_number,
+                "bank_code": bank.bank_code,
+                "phone_number": user.phone_number
+            }
+        request = post('http://backend:8000/createaccount', data=data)
+        return Response(status=status.HTTP_201_CREATED)
