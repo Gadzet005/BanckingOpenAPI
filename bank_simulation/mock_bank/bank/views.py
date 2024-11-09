@@ -12,7 +12,7 @@ from drf_yasg import openapi
 from .models import User, Subscriptions, Account, Bank, Transaction
 from .serializers import TransactionSerializer
 from datetime import datetime, timedelta
-
+from django.utils.dateparse import parse_datetime
 import json
 
 
@@ -242,14 +242,20 @@ class GetTransactions(APIView):
         date_from = request.GET.get('from', '')
         date_to = request.GET.get('to', '')
         if date_from and date_to:
-            date_from = datetime.strptime(date_from, '%d-%m-%Y')
-            date_to = datetime.strptime(date_to, '%d-%m-%Y')
+            date_from = parse_datetime(date_from)
+            date_to = parse_datetime(date_to)
             transactions = Transaction.objects.filter(
                 date_time__range=[date_from, date_to], account_from_id__user=user
             ) | Transaction.objects.filter(
                 date_time__range=[date_from, date_to], account_to_id__user=user
             )
-
+        elif date_from:
+            date_from = parse_datetime(date_from)
+            transactions = Transaction.objects.filter(
+                date_time__gte=date_from, account_from_id__user=user
+            ) | Transaction.objects.filter(
+                date_time__gte=date_from, account_to_id__user=user
+            )
         else:
             transactions = Transaction.objects.filter(
                 account_from_id__user=user
