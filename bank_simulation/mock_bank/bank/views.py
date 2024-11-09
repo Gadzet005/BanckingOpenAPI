@@ -212,7 +212,7 @@ class MakeTransaction(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         date = datetime.now()
         try:
-            #url1 = Subscriptions.objects.filter(account_id=account_from_obj)
+            url1 = Subscriptions.objects.get(account_id=account_from_obj)
             data = {
                 "account_code": account_from_obj.account_number,
                 "bank_code": bank_from_obj.bank_code,
@@ -222,13 +222,12 @@ class MakeTransaction(APIView):
                 "date": str(date),
                 "balance": int(account_from_obj.balance)
             }
-            # for i in url1:
-            #     request1 = post(i.url, data=data)
-            request1 = post('http://backend:8000/webhook/transaction/', data=data)
+            request1 = post(url1.url, data=data)
+            #request1 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
         try:
-            #url2 = Subscriptions.objects.filter(account_id=account_to_obj)
+            url2 = Subscriptions.objects.get(account_id=account_to_obj)
             data = {
                 "account_code": account_to_obj.account_number,
                 "bank_code": bank_to_obj.bank_code,
@@ -238,9 +237,8 @@ class MakeTransaction(APIView):
                 "date": str(date),
                 "balance": int(account_to_obj.balance)
             }
-            # for i in url2:
-            #     request2 = post(i.url, data=data)
-            request2 = post('http://backend:8000/webhook/transaction/', data=data)
+            request2 = post(url2.url, data=data)
+            #request2 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
         return Response(status=status.HTTP_201_CREATED)

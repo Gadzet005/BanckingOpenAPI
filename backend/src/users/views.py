@@ -25,7 +25,7 @@ class RegisterView(APIView):
                 if bank.api_url:
                     try:
                         response = requests.post(
-                            "http://bank:5000/get_token/",
+                            bank.api_url+"/get_token/",
                             json={"phone_number": user.phone_number,
                                   "new": "True",
                                   "bank_code": bank.bank_code},
@@ -35,7 +35,6 @@ class RegisterView(APIView):
                         encoded_jwt = response_data.get("jwt")
                         refresh_token = response_data.get("refresh")
                         accounts_data = response_data.get("accounts", {})
-                        print(accounts_data)
                         try:
                             useraccount = UserAccount.objects.get(user_id=user)
                             useraccount.access_token = encoded_jwt
@@ -46,7 +45,6 @@ class RegisterView(APIView):
                                                                     refresh_token = refresh_token)
                         for account_code, transactions in accounts_data.items():
                             
-                            print(account_code, transactions)
                             account, created = Account.objects.get_or_create(
                                 user_id=user,
                                 bank_id=bank,
