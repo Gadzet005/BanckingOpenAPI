@@ -31,10 +31,6 @@ class AccountSerializer(serializers.ModelSerializer):
         headers = {
             "Authorization": f"Bearer {useraccount.access_token}"
         }
-        url = "http://bank:5000/getinfo/"
-        headers = {
-            "Authorization": f"Bearer {useraccount.access_token}"
-        }
         params = {
             "account_number": obj.account_code
         }
