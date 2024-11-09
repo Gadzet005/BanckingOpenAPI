@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from banking.models import Transaction, Account
+from banking.models import Transaction, Account, UserAccount
 from .serializers import TransactionSerializer, AccountSerializer
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
+import requests
 
 class UserTransactionsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -13,7 +14,7 @@ class UserTransactionsView(APIView):
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
 
-        user_accounts = Account.objects.filter(user_id=request.user)
+        user_accounts = Account.objects.filter(user_id=request.user, isHide=False)
 
         transactions = Transaction.objects.filter(account_id__in=user_accounts)
 
@@ -42,11 +43,80 @@ class UpdateAccountVisibilityView(APIView):
 
     def post(self, request, account_id):
         try:
-            account = Account.objects.get(id=account_id, user_id=request.user)
+            account = Account.objects.get(account_code=account_id, user_id=request.user)
             
             account.isHide = not account.isHide
             account.save()
-
+            if account.isHide:
+                try:
+                    useraccount = UserAccount.objects.get(user_id=request.user)
+                except:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                
+                url = "http://bank:5000/unsubscribe/"
+                headers = {
+                    "Authorization": f"Bearer {useraccount.access_token}"
+                }
+                data = {
+                    "account_number": account.account_code
+                }
+                response = requests.post(url, headers=headers, data=data)
+                if response.status_code == 401:
+                    response_token = requests.post(
+                                    "http://bank:5000/get_token/",
+                                    json={"phone_number": request.user.phone_number,
+                                        "bank_code": self.bank_code},
+                                    timeout=100
+                                )
+                    response_data = response_token.json()
+                    encoded_jwt = response_data.get("jwt")
+                    refresh_token = response_data.get("refresh")
+                    useraccount.access_token = encoded_jwt
+                    useraccount.save()
+                    url = "http://bank:5000/unsubscribe/"
+                    headers = {
+                        "Authorization": f"Bearer {useraccount.access_token}"
+                    }
+                    data = {
+                        "account_number": account.account_code
+                    }
+                    response = requests.post(url, headers=headers, data=data)
+            else:
+                try:
+                    useraccount = UserAccount.objects.get(user_id=request.user)
+                except:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                
+                url = "http://bank:5000/subscribe/"
+                headers = {
+                    "Authorization": f"Bearer {useraccount.access_token}"
+                }
+                data = {
+                    "account_number": account.account_code,
+                    "url": 'http://backend:8000/webhook/transaction/',
+                }
+                response = requests.post(url, headers=headers, data=data)
+                if response.status_code == 401:
+                    response_token = requests.post(
+                                    "http://bank:5000/get_token/",
+                                    json={"phone_number": request.user.phone_number,
+                                        "bank_code": self.bank_code},
+                                    timeout=100
+                                )
+                    response_data = response_token.json()
+                    encoded_jwt = response_data.get("jwt")
+                    refresh_token = response_data.get("refresh")
+                    useraccount.access_token = encoded_jwt
+                    useraccount.save()
+                    url = "http://bank:5000/subscribe/"
+                    headers = {
+                        "Authorization": f"Bearer {useraccount.access_token}"
+                    }
+                    data = {
+                        "account_number": account.account_code,
+                        "url": 'http://backend:8000/webhook/transaction/',
+                    }
+                    response = requests.post(url, headers=headers, data=data)
             return Response({'success': True, 'isHide': account.isHide}, status=status.HTTP_200_OK)
         
         except Account.DoesNotExist:
