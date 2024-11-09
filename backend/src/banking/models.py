@@ -8,7 +8,7 @@ User = get_user_model()
 class Bank(models.Model):
     name = models.CharField(max_length=30)
     bank_code = models.IntegerField(unique=True)
-    api_url = models.URLField(null=True)
+    api_url = models.CharField(max_length=100, null=True)
     
     def __str__(self):
         return self.name

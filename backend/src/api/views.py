@@ -34,13 +34,13 @@ class UserAccountsView(APIView):
 
     def get(self, request):
         user_accounts = Account.objects.filter(user_id=request.user, isHide=False)
-        serializer = AccountSerializer(user_accounts, many=True)
+        serializer = AccountSerializer(user_accounts, many=True, context={'request': request})
         return Response(serializer.data)
     
 class UpdateAccountVisibilityView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def put(self, request, account_id):
+    def post(self, request, account_id):
         try:
             account = Account.objects.get(id=account_id, user_id=request.user)
             
@@ -52,3 +52,4 @@ class UpdateAccountVisibilityView(APIView):
         except Account.DoesNotExist:
             return Response({'error': 'Account not found or does not belong to this user.'},
                             status=status.HTTP_404_NOT_FOUND)
+

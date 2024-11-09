@@ -5,6 +5,9 @@ from django.utils.dateparse import parse_datetime
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from .models import Bank, Account, Transaction
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class TransactionWebhookAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -77,3 +80,22 @@ class TransactionWebhookAPIView(APIView):
             )
 
         return Response({"status": "Транзакция создана", "transaction_id": transaction.id}, status=status.HTTP_201_CREATED)
+
+class CreateTransaction(APIView):
+    def post(self, request):
+        data = request.data
+        bank_code = int(data.get('bank_code'))
+        account_code = int(data.get('account_code'))
+        phone_number = data.get('phone_number')
+        try:
+            user = User.objects.get(phone_number=phone_number)
+            bank = Bank.objects.get(bank_code=bank_code)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if Account.objects.get(bank_id=bank, account_code=account_code):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            account = Account.objects.create(bank_id=bank, account_code=account_code, user_id=user)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
