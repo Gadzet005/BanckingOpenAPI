@@ -10,6 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .models import User, Subscriptions, Account, Bank, Transaction
+from .serializers import TransactionSerializer
 from datetime import datetime, timedelta
 
 import json
@@ -244,11 +245,17 @@ class GetTransactions(APIView):
             date_from = datetime.strptime(date_from, '%d-%m-%Y')
             date_to = datetime.strptime(date_to, '%d-%m-%Y')
             transactions = Transaction.objects.filter(
-                date__range=[date_from, date_to]
+                date_time__range=[date_from, date_to], account_from_id__user=user
+            ) | Transaction.objects.filter(
+                date_time__range=[date_from, date_to], account_to_id__user=user
             )
-            return Response({"transactions": list(transactions)},
-                            status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            transactions = Transaction.objects.filter(
+                account_from_id__user=user
+            )
+        transactions = TransactionSerializer(transactions, many=True)
+        return Response(transactions.data, status=status.HTTP_200_OK)
 
 
 class MakeTransaction(APIView):

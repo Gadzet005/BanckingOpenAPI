@@ -4,7 +4,8 @@ from .views import (MakeTransaction,
                     SubscribeView,
                     UnsubscribeView,
                     AccountInfoView,
-                    RefreshView)
+                    RefreshView,
+                    GetTransactions)
 
 urlpatterns = [
     path(
@@ -16,6 +17,11 @@ urlpatterns = [
         'get_token/',
         AuthView.as_view(),
         name='get_token'
+    ),
+    path(
+        'get_transactions/',
+        GetTransactions.as_view(),
+        name='get_transactions'
     ),
     path(
         'subscribe/',
