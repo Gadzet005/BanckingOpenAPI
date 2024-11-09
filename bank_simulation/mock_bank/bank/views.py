@@ -8,7 +8,7 @@ from jwt import encode, decode
 from requests import post
 
 from .models import User, Subscriptions, Account, Bank, Transaction
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 import json
 
@@ -27,12 +27,12 @@ class AuthView(APIView):
 
                 encoded_jwt = encode({
                     "user_id": user.id,
-                    'exp': datetime.now() + timedelta(days=1)
+                    'exp': datetime.now(UTC) + timedelta(seconds=1)
                 }, "secret", algorithm="HS256")
 
                 refresh_token = encode({
                     'user_id': user.id,
-                    'exp': datetime.now() + timedelta(days=30)
+                    'exp': datetime.now(UTC) + timedelta(days=30)
                 }, "secret", algorithm="HS256")
 
                 if is_new:
@@ -112,7 +112,7 @@ class UnsubscribeView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        token = request.META['HTTP_AUTHORIZATION']
+        token = request.META['HTTP_AUTHORIZATION'].split()[1]
         user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
@@ -135,7 +135,7 @@ class AccountInfoView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        token = request.META['HTTP_AUTHORIZATION']
+        token = request.META['HTTP_AUTHORIZATION'].split()[1]
         user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
@@ -158,7 +158,7 @@ class GetTransactions(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        token = request.META['HTTP_AUTHORIZATION']
+        token = request.META['HTTP_AUTHORIZATION'].split()[1]
         user_id = decode(token, "secret", algorithms=["HS256"])["user_id"]
         try:
             user = User.objects.get(id=user_id)
@@ -258,7 +258,7 @@ class RefreshView(APIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             encoded_jwt = encode({"user_id": user.id,
-                                  'exp': datetime.now() +
+                                  'exp': datetime.now(UTC) +
                                          timedelta(days=1)},
                                  "secret", algorithm="HS256")
             return Response(
