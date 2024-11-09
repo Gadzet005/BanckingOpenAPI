@@ -8,7 +8,7 @@ from jwt import encode, decode, ExpiredSignatureError
 from requests import post
 
 from .models import User, Subscriptions, Account, Bank, Transaction
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 
 import json
 

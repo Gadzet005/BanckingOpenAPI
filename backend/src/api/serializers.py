@@ -36,10 +36,9 @@ class AccountSerializer(serializers.ModelSerializer):
             "Authorization": f"Bearer {useraccount.access_token}"
         }
         params = {
-            "account_number": obj.id
+            "account_number": obj.account_code
         }
         response = requests.get(url, headers=headers, params=params)
-        print(response.status_code)
         if response.status_code == 401:
             response_token = requests.post(
                             "http://bank:5000/get_token/",
@@ -64,4 +63,8 @@ class AccountSerializer(serializers.ModelSerializer):
                 data = response.json()
                 balance = data.get("balance")
                 return balance
-            return None
+        elif response.status_code == 200:
+            data = response.json()
+            balance = data.get("balance")
+            return int(balance)
+        return None
