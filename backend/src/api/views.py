@@ -66,7 +66,7 @@ class UpdateAccountVisibilityView(APIView):
                     response_token = requests.post(
                                     "http://bank:5000/get_token/",
                                     json={"phone_number": request.user.phone_number,
-                                        "bank_code": self.bank_code},
+                                        "bank_code": account.bank_id.bank_code},
                                     timeout=100
                                 )
                     response_data = response_token.json()

@@ -51,6 +51,7 @@ services:
         env_file: "./frontend/.env"
         volumes:
             - ./frontend:/frontend
+            - /frontend/node_modules
         command: yarn dev_docker
         depends_on:
             - backend
