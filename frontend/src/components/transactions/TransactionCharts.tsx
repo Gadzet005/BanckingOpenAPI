@@ -19,6 +19,7 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
   ({ store }) => {
     const [chartNumber, setChartNumber] = useState(0);
     const [timeNumber, setTimeNumber] = useState(3);
+    const [chartType, setChartType] = useState(0);
 
     const handleChangeChartNumber = (
       _: React.SyntheticEvent,
@@ -41,22 +42,63 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
       }
 
       if (timeNumber == 4) {
-        return <DayLineChart transactions={store.list} />;
+        return (
+          <DayLineChart
+            store={store}
+            useLinearRegression={Boolean(chartType)}
+          />
+        );
       } else if (timeNumber == 3) {
-        return <WeekLineChart transactions={store.list} />;
+        return (
+          <WeekLineChart
+            store={store}
+            useLinearRegression={Boolean(chartType)}
+          />
+        );
       } else if (timeNumber == 2) {
-        return <MonthLineChart transactions={store.list} />;
+        return (
+          <MonthLineChart
+            store={store}
+            useLinearRegression={Boolean(chartType)}
+          />
+        );
       } else if (timeNumber == 1) {
-        return <YearLineChart transactions={store.list} />;
+        return (
+          <YearLineChart
+            store={store}
+            useLinearRegression={Boolean(chartType)}
+          />
+        );
       }
-      return <TotalLineChart transactions={store.list} />;
+      return (
+        <TotalLineChart
+          store={store}
+          useLinearRegression={Boolean(chartType)}
+        />
+      );
     };
 
     const chart =
       chartNumber === 0 ? (
-        getLineChart()
+        <div className="d-flex flex-column h-100 w-100">
+          <div className="d-flex justify-content-center">
+            <Tabs
+              value={chartType}
+              onChange={(_: React.SyntheticEvent, value: number) =>
+                setChartType(value)
+              }
+              aria-label="icon tabs example"
+            >
+              <Tab className="rounded-top-4" label="Данные" />
+              <Tab className="rounded-top-4" label="Приближение" />
+            </Tabs>
+          </div>
+          <div className="h-100 p-3">{getLineChart()}</div>
+        </div>
       ) : (
-        <CategoryPieChart transactions={store.list} />
+        <div className="h-100 w-100 p-3">
+          <CategoryPieChart store={store} />
+        </div>
       );
 
     return (
@@ -83,7 +125,7 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
             <Tab className="rounded-top-4" label="День" />
           </Tabs>
         </div>
-        <div className="d-flex justify-content-center p-3 h-100">
+        <div className="d-flex justify-content-center h-100">
           <Box className="d-flex align-items-center h-100 w-100 pb-5">
             {chart}
           </Box>

@@ -3,7 +3,7 @@ import { HeaderListElem, HeaderElemType } from "./interfaces";
 
 export const headerList: Array<HeaderListElem> = [
     {
-        name: "Главная",
+        name: "О нас",
         path: Path.homePage,
         type: HeaderElemType.forAll,
     },
@@ -18,7 +18,7 @@ export const headerList: Array<HeaderListElem> = [
         type: HeaderElemType.onlyForAnonymous,
     },
     {
-        name: "Транзакции",
+        name: "Данные",
         path: Path.transactions,
         type: HeaderElemType.onylForAuth,
     },

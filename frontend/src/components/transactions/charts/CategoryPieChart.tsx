@@ -2,8 +2,10 @@ import { FC } from "react";
 import { ChartProps } from "./chartProps";
 import { PieChart } from "@mui/x-charts";
 import { categoryInfo } from "../store/category";
+import { observer } from "mobx-react-lite";
 
-export const CategoryPieChart: FC<ChartProps> = ({ transactions }) => {
+export const CategoryPieChart: FC<ChartProps> = observer(({ store }) => {
+  const transactions = store.list;
   const categoryMap = new Map<string, number>();
 
   transactions.forEach((transaction) => {
@@ -37,4 +39,4 @@ export const CategoryPieChart: FC<ChartProps> = ({ transactions }) => {
       ]}
     />
   );
-};
+});
