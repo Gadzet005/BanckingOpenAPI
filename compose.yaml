@@ -22,7 +22,7 @@ services:
             - "5000:5000"
         command: sh -c "
             python mock_bank/manage.py migrate &&
-            python mock_bank/manage.py ensure_superuser &&
+            python mock_bank/manage.py ensure_test_data &&
             python mock_bank/manage.py runserver 0.0.0.0:5000"
         volumes:
             - ./bank_simulation:/bank_simulation
@@ -36,7 +36,7 @@ services:
         env_file: "./backend/.env"
         command: sh -c "
             python src/manage.py migrate &&
-            python src/manage.py ensure_superuser &&
+            python src/manage.py ensure_test_data &&
             python src/manage.py runserver 0.0.0.0:8000"
         volumes:
             - ./backend:/backend
