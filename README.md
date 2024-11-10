@@ -9,7 +9,7 @@
 -   Создать `.env` файлы в `./backend`, `./frontend`, `./bank_simulation` (см. `.env.example`)
 -   `docker compose build`
 -   `docker compose up`
--   frontend доступен по адресу `http://localhost:5173`, backend - `http://localhost:8000`, банковская бесочница - `http://localhost:5000`
+-   frontend доступен по адресу `http://localhost:5173`, backend - `http://localhost:8000`, банковская песочница - `http://localhost:5000`
 
 ## Nix (пока не работает)
 -   `nix develop --impure -c fish`
