@@ -69,7 +69,7 @@ export class TransactionStore {
   }
 
   get pages(): number {
-    return Math.ceil(this.list.length / this.pageSize);
+    return Math.max(1, Math.ceil(this.list.length / this.pageSize));
   }
 
   add(transaction: ITransaction): boolean {

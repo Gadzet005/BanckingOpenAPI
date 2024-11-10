@@ -2,31 +2,36 @@ import { FC } from "react";
 import { ChartProps } from "./chartProps";
 import { BaseLineChart } from "./BaseLineChart";
 import { weekDays } from "./common";
+import { observer } from "mobx-react-lite";
 
 const axisValues: Array<number> = [...Array(7).keys()];
 
-export const WeekLineChart: FC<ChartProps> = ({ transactions }) => {
-  const expenseCount = new Array<number>(7).fill(0);
-  const incomeCount = new Array<number>(7).fill(0);
+export const WeekLineChart: FC<ChartProps> = observer(
+  ({ store, useLinearRegression }) => {
+    const transactions = store.list;
+    const expenseCount = new Array<number>(7).fill(0);
+    const incomeCount = new Array<number>(7).fill(0);
 
-  transactions.forEach((transaction) => {
-    const rawDay = transaction.date.getDay();
-    const day = rawDay == 0 ? 6 : rawDay - 1;
+    transactions.forEach((transaction) => {
+      const rawDay = transaction.date.getDay();
+      const day = rawDay == 0 ? 6 : rawDay - 1;
 
-    if (transaction.type == "expense") {
-      expenseCount[day] += transaction.amount;
-    } else {
-      incomeCount[day] += transaction.amount;
-    }
-  });
+      if (transaction.type == "expense") {
+        expenseCount[day] += transaction.amount;
+      } else {
+        incomeCount[day] += transaction.amount;
+      }
+    });
 
-  return (
-    <BaseLineChart
-      axisData={axisValues}
-      axisLabel="День недели"
-      axisFormatter={(num) => (Number.isInteger(num) ? weekDays[num] : "")}
-      expensesData={expenseCount}
-      incomesData={incomeCount}
-    />
-  );
-};
+    return (
+      <BaseLineChart
+        axisData={axisValues}
+        axisLabel="День недели"
+        axisFormatter={(num) => (Number.isInteger(num) ? weekDays[num] : "")}
+        expensesData={expenseCount}
+        incomesData={incomeCount}
+        useLinearRegression={useLinearRegression}
+      />
+    );
+  },
+);

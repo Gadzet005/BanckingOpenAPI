@@ -1,5 +1,6 @@
-import { Transaction } from "../store/transaction";
+import { TransactionStore } from "../store/transactionStore";
 
 export interface ChartProps {
-    transactions: Transaction[];
+    store: TransactionStore;
+    useLinearRegression?: boolean;
 }
