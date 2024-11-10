@@ -85,6 +85,7 @@ class AuthView(APIView):
 
         return Response({"error": f"{phone_number}"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class SubscribeView(APIView):
 
     permission_classes = [AllowAny]
@@ -298,8 +299,9 @@ class MakeTransaction(APIView):
         except IntegrityError:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         date = datetime.now()
+        print(123)
         try:
-            url1 = Subscriptions.objects.get(account_id=account_from_obj)
+            url1 = Subscriptions.objects.filter(account_id=account_from_obj)
             data = {
                 "account_code": account_from_obj.account_number,
                 "bank_code": bank_from_obj.bank_code,
@@ -309,12 +311,17 @@ class MakeTransaction(APIView):
                 "date": str(date),
                 "balance": int(account_from_obj.balance)
             }
-            request1 = post(url1.url, data=data)
+            try:
+                for i in url1:
+                    request1 = post(i.url, data=data)
+            except Exception:
+                pass
             #request1 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
         try:
-            url2 = Subscriptions.objects.get(account_id=account_to_obj)
+            url2 = Subscriptions.objects.filter(account_id=account_to_obj)
+            print(url2)
             data = {
                 "account_code": account_to_obj.account_number,
                 "bank_code": bank_to_obj.bank_code,
@@ -324,7 +331,11 @@ class MakeTransaction(APIView):
                 "date": str(date),
                 "balance": int(account_to_obj.balance)
             }
-            request2 = post(url2.url, data=data)
+            try:
+                for i in url2:
+                    request2 = post(i.url, data=data)
+            except Exception:
+                pass
             #request2 = post('http://backend:8000/webhook/transaction/', data=data)
         except ObjectDoesNotExist:
             pass
