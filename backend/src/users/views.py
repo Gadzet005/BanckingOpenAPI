@@ -35,6 +35,7 @@ class RegisterView(APIView):
                         encoded_jwt = response_data.get("jwt")
                         refresh_token = response_data.get("refresh")
                         accounts_data = response_data.get("accounts", {})
+                        print(accounts_data)
                         try:
                             useraccount = UserAccount.objects.get(user_id=user)
                             useraccount.access_token = encoded_jwt
