@@ -1,0 +1,96 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Open banking API imitation",
+    "description": "Данное API было расширено возможностью подписки на оповещения о произошедших транзакциях",
+    "version": "v1"
+  },
+  "host": "127.0.0.1:8000",
+  "schemes": ["http"],
+  "basePath": "/",
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "Basic": {"type": "basic"}
+  },
+  "security": [
+    {"Basic": []}
+  ],
+  "paths": {
+    "/subscribe/": {
+      "post": {
+        "operationId": "subscribe_create",
+        "summary": "Обработчик для подписки на оповещения о транзакциях",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": ["url", "account_number"],
+              "type": "object",
+              "properties": {
+                "url": {"type": "string"},
+                "account_number": {"type": "integer"}
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Возвращается в случае создания записи в таблице подписок"
+          },
+          "401": {
+            "description": "Возвращается при некорректном или просроченном токене"
+          },
+          "403": {
+            "description": "Возвращается, если пользователь не является владельцем счета"
+          },
+          "404": {
+            "description": "Возвращается при передаче неправильных параметров"
+          }
+        },
+        "tags": ["handlerы for webhook"]
+      },
+      "parameters": []
+    },
+    "/unsubscribe/": {
+      "post": {
+        "operationId": "unsubscribe_create",
+        "summary": "Обработчик для отписки от оповещенияй о транзакциях",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": ["url"],
+              "type": "object",
+              "properties": {
+                "account_number": {"type": "integer"}
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Возвращается в случае удаления записи в таблице подписок"
+          },
+          "401": {
+            "description": "Возвращается при некорректном или просроченном токене"
+          },
+          "403": {
+            "description": "Возвращается, если пользователь не является владельцем счета"
+          },
+          "404": {
+            "description": "Возвращается при передаче неправильных параметров"
+          }
+        },
+        "tags": ["handlerы for webhook"]
+      },
+      "parameters": []
+    }
+  }, "definitions": {}
+}
