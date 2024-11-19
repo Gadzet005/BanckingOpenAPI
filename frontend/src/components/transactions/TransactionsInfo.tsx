@@ -94,7 +94,7 @@ export const TransactionsInfo: FC = observer(() => {
   );
 
   return (
-    <Box className="d-flex m-3 h-75 mt-5">
+    <Box className="d-flex px-3 h-75">
       <Box className="col-lg-8 col-md-7 col-sm-6 pe-3 h-100">
         {store && <TransactionCharts store={store} />}
       </Box>

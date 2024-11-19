@@ -3,13 +3,13 @@ from datetime import datetime
 
 
 TYPES_OF_TRANSACTION = [
-    ('entertainment', 'Развлечения'),
-    ('food', 'Еда'),
-    ('transport', 'Транспорт'),
-    ('utilities', 'Коммунальные услуги'),
-    ('transfer', 'Перевод'),
-    ('salary', 'Зарплата'),
-    ('investment', 'Инвестиции'),
+    ("entertainment", "Развлечения"),
+    ("food", "Еда"),
+    ("transport", "Транспорт"),
+    ("utilities", "Коммунальные услуги"),
+    ("transfer", "Перевод"),
+    ("salary", "Зарплата"),
+    ("investment", "Инвестиции"),
 ]
 
 
@@ -27,18 +27,22 @@ class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account_number = models.IntegerField(unique=True)
     bank = models.ForeignKey(Bank, on_delete=models.PROTECT)
-    balance = models.FloatField()
+    balance = models.FloatField(default=0)
 
 
 class Transaction(models.Model):
     account_from_id = models.ForeignKey(
-        Account, on_delete=models.PROTECT, related_name="account_from")
+        Account, on_delete=models.PROTECT, related_name="account_from"
+    )
     account_to_id = models.ForeignKey(
-        Account, on_delete=models.PROTECT, related_name="account_to")
+        Account, on_delete=models.PROTECT, related_name="account_to"
+    )
     bank_from_id = models.ForeignKey(
-        Bank, on_delete=models.PROTECT, related_name="bank_from")
+        Bank, on_delete=models.PROTECT, related_name="bank_from"
+    )
     bank_to_id = models.ForeignKey(
-        Bank, on_delete=models.PROTECT, related_name="bank_to")
+        Bank, on_delete=models.PROTECT, related_name="bank_to"
+    )
     category = models.CharField(max_length=30, choices=TYPES_OF_TRANSACTION)
     quantity = models.FloatField()
     date_time = models.DateTimeField(default=datetime.now)

@@ -1,30 +1,46 @@
 import { Path } from "../../routing/path";
-import { HeaderListElem, HeaderElemType } from "./interfaces";
+import { internal } from "./internal";
 
-export const headerList: Array<HeaderListElem> = [
+export const navList: Array<internal.HeaderLinkItem> = [
     {
-        name: "О нас",
-        path: Path.homePage,
-        type: HeaderElemType.forAll,
+        name: "Обзор",
+        path: Path.transactions,
+        type: internal.HeaderItemType.onlyForAuth,
     },
     {
+        name: "Операции",
+        path: Path.transactions,
+        type: internal.HeaderItemType.onlyForAuth,
+    },
+    {
+        name: "Счета",
+        path: Path.transactions,
+        type: internal.HeaderItemType.onlyForAuth,
+    },
+];
+
+export const userMenuList: Array<internal.HeaderLinkItem> = [
+    {
         name: "Вход",
+        type: internal.HeaderItemType.onlyForAnonymous,
         path: Path.loginPage,
-        type: HeaderElemType.onlyForAnonymous,
     },
     {
         name: "Регистрация",
+        type: internal.HeaderItemType.onlyForAnonymous,
         path: Path.registerPage,
-        type: HeaderElemType.onlyForAnonymous,
-    },
-    {
-        name: "Данные",
-        path: Path.transactions,
-        type: HeaderElemType.onylForAuth,
     },
     {
         name: "Профиль",
+        type: internal.HeaderItemType.onlyForAuth,
         path: Path.accountPage,
-        type: HeaderElemType.onylForAuth,
+    },
+    {
+        name: "Выход",
+        type: internal.HeaderItemType.onlyForAuth,
+        onClick: (context) => {
+            context.user.logout();
+            context.navigate(Path.loginPage);
+        },
     },
 ];

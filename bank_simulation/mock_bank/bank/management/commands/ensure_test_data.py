@@ -21,6 +21,7 @@ class Command(BaseCommand):
         bank1, _ = Bank.objects.get_or_create(name="KG Bank", bank_code=100000000)
         bank2, _ = Bank.objects.get_or_create(name="VEDB", bank_code=100000001)
         bank3, _ = Bank.objects.get_or_create(name="GO-Bank", bank_code=100000002)
+
         user1, _ = CustomUser.objects.get_or_create(
             name="user1", phone_number="+71234567890"
         )
@@ -30,24 +31,26 @@ class Command(BaseCommand):
         user3, _ = CustomUser.objects.get_or_create(
             name="user3", phone_number="+71234567892"
         )
+
         account1, _ = Account.objects.get_or_create(
-            user=user1, account_number=100000, bank=bank1, balance=100000
+            user=user1, account_number=100000, bank=bank1
         )
         account2, _ = Account.objects.get_or_create(
-            user=user1, account_number=200000, bank=bank2, balance=100001
+            user=user1, account_number=200000, bank=bank2
         )
         account3, _ = Account.objects.get_or_create(
-            user=user1, account_number=123456, bank=bank3, balance=100002
+            user=user1, account_number=123456, bank=bank3
         )
         account4, _ = Account.objects.get_or_create(
-            user=user2, account_number=100089, bank=bank1, balance=100003
+            user=user2, account_number=100089, bank=bank1
         )
         account5, _ = Account.objects.get_or_create(
-            user=user2, account_number=3007745, bank=bank3, balance=100004
+            user=user2, account_number=3007745, bank=bank3
         )
         account6, _ = Account.objects.get_or_create(
-            user=user3, account_number=911900, bank=bank2, balance=100005
+            user=user3, account_number=911900, bank=bank2
         )
+
         Transaction.objects.get_or_create(
             account_from_id=account1,
             account_to_id=account6,
