@@ -12,6 +12,12 @@ TYPES_OF_TRANSACTION = [
     ('investment', 'Инвестиции'),
 ]
 
+PERIOD_CHOICE = [
+    ('days', 'Дни'),
+    ('months', 'Месяцы'),
+    ('years', 'Годы')
+]
+
 
 class Bank(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -42,6 +48,18 @@ class Transaction(models.Model):
     category = models.CharField(max_length=30, choices=TYPES_OF_TRANSACTION)
     quantity = models.FloatField()
     date_time = models.DateTimeField(default=datetime.now)
+
+
+class PeriodicPayment(models.Model):
+    account_from_id = models.ForeignKey(
+        Account, on_delete=models.PROTECT, related_name="periodic_account_from")
+    account_to_id = models.ForeignKey(
+        Account, on_delete=models.PROTECT, related_name="periodic_account_to")
+    amount = models.IntegerField()
+    creator = models.CharField()
+    period_type = models.CharField(choices=PERIOD_CHOICE)
+    period = models.IntegerField()
+    creation_tyme = models.DateTimeField(default=datetime.now)
 
 
 class Subscriptions(models.Model):
