@@ -95,7 +95,7 @@ export const Header = observer(() => {
       position="static"
       enableColorOnDark
     >
-      <Container maxWidth="md">
+      <Container maxWidth="xl">
         <Toolbar
           sx={{ display: "flex", justifyContent: "space-between" }}
           disableGutters
@@ -128,7 +128,13 @@ export const Header = observer(() => {
             {navItems}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box
+            sx={{
+              width: { md: "15%" },
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Tooltip title="Пользователь">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar sx={{ bgcolor: "primary.main" }}>
