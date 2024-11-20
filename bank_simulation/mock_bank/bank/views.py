@@ -132,8 +132,10 @@ class SubscribeView(APIView):
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        url = self.request.POST.get("url")
-        account_number = self.request.POST.get("account_number")
+        url = self.request.POST.get("url", None)
+        account_number = self.request.POST.get("account_number", None)
+        if not (account_number and url):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             account = Account.objects.get(account_number=account_number)
             if user.id != account.user.id:
@@ -189,7 +191,9 @@ class UnsubscribeView(APIView):
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        account_number = self.request.POST.get("account_number")
+        account_number = self.request.POST.get("account_number", None)
+        if not account_number:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             account = Account.objects.get(account_number=account_number)
             if user.id != account.user.id:
@@ -269,7 +273,24 @@ class GetTransactions(APIView):
 class MakeTransaction(APIView):
     permission_classes = [AllowAny]
 
+    schema = {
+        "type": "object",
+        "properties": {
+            "account_from": {"type": "integer"},
+            "account_to": {"type": "integer"},
+            "bank_from": {"type": "string"},
+            "bank_to": {"type": "string"},
+            "amount": {"type": "integer"},
+            "category": {"type": "string"},
+        },
+        "required": ["account_from", "account_to", "bank_from", "bank_to", "amount", "category"]
+    }
+
     def post(self, request):
+        try:
+            validate(instance=json.loads(request.body), schema=self.schema)
+        except ValidationError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         account_from = json.loads(request.body).get("from")
         account_to = json.loads(request.body).get("to")
         bank_from = json.loads(request.body).get("bank_from")
