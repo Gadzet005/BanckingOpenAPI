@@ -4,7 +4,7 @@ import { Header } from "./components/header/Header";
 import { AppRouter } from "./routing/AppRouter";
 import { User, UserContext } from "./public/user";
 import { Box, ThemeProvider } from "@mui/material";
-import { darkTheme } from "./theme";
+import { appTheme } from "./public/appTheme";
 
 const App = () => {
   const [user] = useState(() => {
@@ -16,7 +16,7 @@ const App = () => {
   return (
     <UserContext.Provider value={user}>
       <BrowserRouter>
-        <ThemeProvider theme={darkTheme}>
+        <ThemeProvider theme={appTheme}>
           <Box
             sx={{
               display: "flex",

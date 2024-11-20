@@ -54,7 +54,7 @@ export const PasswordField: FC<PasswordFieldProps> = ({
         endAdornment={
           <InputAdornment position="end">
             <IconButton
-              sx={{ color: "mochaText.main" }}
+              sx={{ color: "text.secondary" }}
               aria-label={isVisible ? "Спрятать пароль" : "Показать пароль"}
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}

@@ -1,25 +1,26 @@
 import PieChartIcon from "@mui/icons-material/PieChart";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { FC, useState } from "react";
-import { TransactionStore } from "./store/transactionStore";
-import { DayLineChart } from "./charts/DayLineChart";
-import { WeekLineChart } from "./charts/WeekLineChart";
-import { MonthLineChart } from "./charts/MonthLineChart";
-import { YearLineChart } from "./charts/YearLineChart";
-import { TotalLineChart } from "./charts/TotalLineChart";
+import React from "react";
+import { mochaColors } from "../../public/colors";
 import { CategoryPieChart } from "./charts/CategoryPieChart";
+import { DayLineChart } from "./charts/DayLineChart";
+import { MonthLineChart } from "./charts/MonthLineChart";
+import { TotalLineChart } from "./charts/TotalLineChart";
+import { WeekLineChart } from "./charts/WeekLineChart";
+import { YearLineChart } from "./charts/YearLineChart";
+import { TransactionStore } from "./store/transactionStore";
 
 interface TransactionChartsProps {
   store: TransactionStore;
 }
 
-export const TransactionCharts: FC<TransactionChartsProps> = observer(
+export const TransactionCharts: React.FC<TransactionChartsProps> = observer(
   ({ store }) => {
-    const [chartNumber, setChartNumber] = useState(0);
-    const [timeNumber, setTimeNumber] = useState(3);
-    const [chartType, setChartType] = useState(0);
+    const [chartNumber, setChartNumber] = React.useState(0);
+    const [timeNumber, setTimeNumber] = React.useState(2);
+    const [chartType, setChartType] = React.useState(0);
 
     const handleChangeChartNumber = (
       _: React.SyntheticEvent,
@@ -79,9 +80,11 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
     };
 
     const chart =
-      chartNumber === 0 ? (
-        <div className="d-flex flex-column h-100 w-100">
-          <div className="d-flex justify-content-center">
+      store.list.length === 0 ? (
+        <Typography variant="h6">Нет операций за этот период</Typography>
+      ) : chartNumber === 0 ? (
+        <Box className="d-flex flex-column h-100 w-100">
+          <Box className="d-flex justify-content-center">
             <Tabs
               value={chartType}
               onChange={(_: React.SyntheticEvent, value: number) =>
@@ -92,25 +95,42 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
               <Tab className="rounded-top-4" label="Данные" />
               <Tab className="rounded-top-4" label="Приближение" />
             </Tabs>
-          </div>
-          <div className="h-100 p-3">{getLineChart()}</div>
-        </div>
+          </Box>
+          <Box className="h-100 p-3">{getLineChart()}</Box>
+        </Box>
       ) : (
-        <div className="h-100 w-100 p-3">
+        <Box className="h-100 w-100 p-3">
           <CategoryPieChart store={store} />
-        </div>
+        </Box>
       );
 
     return (
-      <div className="mocha-bg-base rounded-4 h-100">
-        <div className="d-flex justify-content-between mocha-bg-mantle rounded-top-4">
+      <Box sx={{ bgcolor: mochaColors.base, borderRadius: 4, height: "100%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            bgcolor: mochaColors.mantle,
+            borderRadius: 4,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
+        >
           <Tabs
             value={chartNumber}
             onChange={handleChangeChartNumber}
             aria-label="icon tabs example"
           >
-            <Tab className="rounded-top-4" icon={<ShowChartIcon />} />
-            <Tab className="rounded-top-4" icon={<PieChartIcon />} />
+            <Tab
+              sx={{
+                borderRadius: 4,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                borderTopRightRadius: 0,
+              }}
+              icon={<ShowChartIcon />}
+            />
+            <Tab icon={<PieChartIcon />} />
           </Tabs>
 
           <Tabs
@@ -118,19 +138,36 @@ export const TransactionCharts: FC<TransactionChartsProps> = observer(
             onChange={handleChangeTimeNumber}
             aria-label="icon tabs example"
           >
-            <Tab className="rounded-top-4" label="Все время" />
-            <Tab className="rounded-top-4" label="Год" />
-            <Tab className="rounded-top-4" label="Месяц" />
-            <Tab className="rounded-top-4" label="Неделя" />
-            <Tab className="rounded-top-4" label="День" />
+            <Tab label="Все время" />
+            <Tab label="Год" />
+            <Tab label="Месяц" />
+            <Tab label="Неделя" />
+            <Tab
+              sx={{
+                borderRadius: 4,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                borderTopLeftRadius: 0,
+              }}
+              label="День"
+            />
           </Tabs>
-        </div>
-        <div className="d-flex justify-content-center h-100">
-          <Box className="d-flex align-items-center h-100 w-100 pb-5">
+        </Box>
+        <Box sx={{ height: "100%", display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              pb: 5,
+            }}
+          >
             {chart}
           </Box>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   },
 );

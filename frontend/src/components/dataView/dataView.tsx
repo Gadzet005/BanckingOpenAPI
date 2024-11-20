@@ -14,7 +14,7 @@ import { TransactionStore } from "./store/transactionStore";
 import { TransactionCharts } from "./TransactionCharts";
 import { TransactionListView } from "./TransactionListView";
 
-export const TransactionsInfo: FC = observer(() => {
+export const DataView: FC = observer(() => {
   const [store, setStore] = useState<TransactionStore | null>(null);
   const [isNotificationOpened, setIsNotificationOpened] =
     useState<boolean>(false);
@@ -56,7 +56,7 @@ export const TransactionsInfo: FC = observer(() => {
 
   useEffect(() => {
     getTransactions().then((transactions) => {
-      setStore(new TransactionStore(transactions, "week"));
+      setStore(new TransactionStore(transactions, "month"));
     });
   }, []);
 

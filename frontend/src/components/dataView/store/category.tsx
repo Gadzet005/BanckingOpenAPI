@@ -7,6 +7,7 @@ import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import { mochaColors } from "../../../public/colors";
 
 interface CategoryInfo {
   name: string;
@@ -18,51 +19,51 @@ export const categoryInfo: Record<string, CategoryInfo> = {
   salary: {
     name: "Зарплата",
     icon: <AttachMoneyIcon color="action" />,
-    color: "#a6e3a1",
+    color: mochaColors.green,
   },
   gift: {
     name: "Подарок",
     icon: <CardGiftcardIcon color="action" />,
-    color: "#94e2d5",
+    color: mochaColors.teal,
   },
   investment: {
     name: "Инвестиции",
     icon: <AnalyticsIcon color="action" />,
-    color: "#cba6f7",
+    color: mochaColors.mauve,
   },
   transferOut: {
     name: "Перевод",
     icon: <ReceiptIcon color="action" />,
-    color: "#f38ba8",
+    color: mochaColors.red,
   },
   transferIn: {
     name: "Перевод",
     icon: <ReceiptIcon color="action" />,
-    color: "#89b4fa",
+    color: mochaColors.blue,
   },
   food: {
     name: "Еда",
     icon: <LocalDiningIcon color="action" />,
-    color: "#fab387",
+    color: mochaColors.peach,
   },
   entertainment: {
     name: "Развлечения",
     icon: <SportsEsportsIcon color="action" />,
-    color: "#eba0ac",
+    color: mochaColors.maroon,
   },
   transport: {
     name: "Транспорт",
     icon: <DirectionsBusIcon color="action" />,
-    color: "#1169bf",
+    color: mochaColors.lavender,
   },
   utilities: {
     name: "Услуги",
     icon: <CurrencyExchangeIcon color="action" />,
-    color: "#89dceb",
+    color: mochaColors.sky,
   },
   other: {
     name: "Прочее",
     icon: <MoreHorizIcon color="action" />,
-    color: "#f5c2e7",
+    color: mochaColors.pink,
   },
 };

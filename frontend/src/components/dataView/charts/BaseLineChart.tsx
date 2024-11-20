@@ -1,6 +1,7 @@
 import { LineChart } from "@mui/x-charts";
 import { FC } from "react";
 import { linearRegressionLine, linearRegression } from "simple-statistics";
+import { mochaColors } from "../../../public/colors";
 
 interface BaseLineChartProps {
   axisData: number[];
@@ -58,13 +59,13 @@ export const BaseLineChart: FC<BaseLineChartProps> = ({
     series = [
       {
         data: expensesData,
-        color: "#f38ba8",
+        color: mochaColors.red,
         label: "Расходы",
         valueFormatter: formatAmount,
       },
       {
         data: incomesData,
-        color: "#a6e3a1",
+        color: mochaColors.green,
         label: "Доходы",
         valueFormatter: formatAmount,
       },
@@ -75,13 +76,13 @@ export const BaseLineChart: FC<BaseLineChartProps> = ({
     series = [
       {
         data: expensesPrediction,
-        color: "#fab387",
+        color: mochaColors.red,
         label: "Расходы",
         valueFormatter: formatAmount,
       },
       {
         data: incomesPrediction,
-        color: "#94e2d5",
+        color: mochaColors.green,
         label: "Доходы",
         valueFormatter: formatAmount,
       },

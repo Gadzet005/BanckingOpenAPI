@@ -27,7 +27,7 @@ export const NavItem: FC<Props> = ({
       }}
       sx={{
         textDecoration: "none",
-        color: "mochaText.main",
+        color: "text.primary",
       }}
     >
       {name}

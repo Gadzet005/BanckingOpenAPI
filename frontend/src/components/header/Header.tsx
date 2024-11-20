@@ -112,7 +112,7 @@ export const Header = observer(() => {
               sx={{
                 mr: 2,
                 textDecoration: "none",
-                color: "mochaText.main",
+                color: "text.secondary",
               }}
             >
               Тонущий корабль

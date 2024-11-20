@@ -3,7 +3,8 @@ import { Home } from "../components/home/Home";
 import { Login } from "../components/user/Login";
 import { Register } from "../components/user/Register";
 import { Account } from "../components/user/Account";
-import { TransactionsInfo } from "../components/transactions/TransactionsInfo";
+import { DataView } from "../components/dataView/dataView";
+import { TransactionList } from "../components/transactions/transactionList";
 
 export const publicRoutes = [
   {
@@ -26,7 +27,11 @@ export const authRoutes = [
     component: <Account />,
   },
   {
+    path: Path.dataView,
+    component: <DataView />,
+  },
+  {
     path: Path.transactions,
-    component: <TransactionsInfo />,
+    component: <TransactionList />,
   },
 ];
