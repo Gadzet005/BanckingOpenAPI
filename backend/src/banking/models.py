@@ -81,3 +81,4 @@ class PeriodicPayment(models.Model):
     period_type = models.CharField(max_length=100)
     period = models.IntegerField()
     date = models.DateTimeField(default=datetime.now)
+    creator = models.CharField(max_length=255, default="")

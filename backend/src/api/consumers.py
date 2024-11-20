@@ -27,11 +27,9 @@ class TransactionConsumer(AsyncWebsocketConsumer):
         try:
             UntypedToken(token)
         except ExpiredSignatureError:
-            print("Token has expired.")
             await self.close(code=4401)
             return
         except (InvalidToken, TokenError):
-            print("Invalid token.")
             await self.close(code=4403)
             return
 
@@ -74,7 +72,8 @@ class TransactionConsumer(AsyncWebsocketConsumer):
                 'amount': event['amount'],
                 'period': event['period'],
                 'period_type': event['period_type'],
-                'date': event['date']
+                'date': event['date'],
+                'creator': event['creator']
             }))
 
     @database_sync_to_async
