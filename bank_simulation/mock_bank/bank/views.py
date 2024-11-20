@@ -64,7 +64,7 @@ class AuthView(APIView):
                                 "date": transaction.date_time.isoformat(),
                                 "category": transaction.category,
                             })
-                        subscription = Subscriptions.objects.create(account_id=account, url='http://backend:8000/webhook/transaction/')
+                        subscription = Subscriptions.objects.create(account_id=account, url='http://backend:8000/webhook/')
                         accounts_data[account.account_number] = transactions_list
 
                     return Response(
@@ -446,10 +446,11 @@ class CreatePeriodicPaymentView(APIView):
             data = {
                     "event_type": "subscribe",
                     "amount": amount,
-                    "owner": creator,
                     "period_type": period_type,
                     "period": period,
-                    "creation_date": date
+                    "creation_date": date,
+                    "account_code": account_from_obj.account_number,
+                    "bank_code": account_from_obj.bank.bank_code
                     }
             try:
                 for i in url1:

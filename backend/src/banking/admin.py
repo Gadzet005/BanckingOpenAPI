@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bank, Account, Transaction, UserAccount
+from .models import Bank, Account, Transaction, UserAccount, PeriodicPayment
 
 class BankAdmin(admin.ModelAdmin):
     list_display = ('name', 'bank_code', 'api_url')
@@ -32,3 +32,11 @@ class TransactionAdmin(admin.ModelAdmin):
 admin.site.register(Transaction, TransactionAdmin)
 
 admin.site.register(UserAccount)
+
+class PeriodicPaymentAdmin(admin.ModelAdmin):
+    list_display = ('account_id', 'amount', 'period', 'period_type', 'date')
+    list_filter = ('period_type', 'date')
+    search_fields = ('account_id__user_id__email', 'period_type')
+    ordering = ('-date',)
+
+admin.site.register(PeriodicPayment, PeriodicPaymentAdmin)
