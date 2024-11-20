@@ -315,7 +315,6 @@ class MakeTransaction(APIView):
             bank_from_obj = Bank.objects.get(name=bank_from)
             bank_to_obj = Bank.objects.get(name=bank_to)
         except ObjectDoesNotExist:
-            print([account_from, account_to, bank_from, bank_to, amount, category,])
             return Response({"message": f"{[account_from, account_to]}]"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             with transaction.atomic():
@@ -334,7 +333,6 @@ class MakeTransaction(APIView):
         except IntegrityError:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         date = datetime.now()
-        print(123)
         try:
             url1 = Subscriptions.objects.filter(account_id=account_from_obj)
             data = {
@@ -357,7 +355,6 @@ class MakeTransaction(APIView):
             pass
         try:
             url2 = Subscriptions.objects.filter(account_id=account_to_obj)
-            print(url2)
             data = {
                 "event_type": "transaction",
                 "account_code": account_to_obj.account_number,
@@ -425,7 +422,6 @@ class CreatePeriodicPaymentView(APIView):
             validate(instance=json.loads(request.body), schema=self.schema)
         except ValidationError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        print(123)
         account_from = json.loads(request.body).get("from")
         account_to = json.loads(request.body).get("to")
         amount = json.loads(request.body).get("amount")
@@ -463,7 +459,8 @@ class CreatePeriodicPaymentView(APIView):
                     "period": period,
                     "creation_date": date,
                     "account_code": account_from_obj.account_number,
-                    "bank_code": account_from_obj.bank.bank_code
+                    "bank_code": account_from_obj.bank.bank_code,
+                    "creator": creator
                     }
             try:
                 for i in url1:

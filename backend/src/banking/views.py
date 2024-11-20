@@ -22,7 +22,6 @@ class WebhookAPIView(APIView):
             subtype = data.get('category')
             
             if not all([bank_code, account_code, amount, date_str, balance, subtype]):
-                print([bank_code, account_code, amount, date_str, balance, subtype])
                 return Response({"error": f"Нет всех обязательных полей {[bank_code, account_code, amount, date_str, balance, subtype]}"}, status=status.HTTP_400_BAD_REQUEST)
 
             date = parse_datetime(date_str) if date_str else None
@@ -35,13 +34,11 @@ class WebhookAPIView(APIView):
             try:
                 bank = Bank.objects.get(bank_code=bank_code)
             except Bank.DoesNotExist:
-                print("WASD")
                 return Response({"error": "Банк не найден"}, status=status.HTTP_404_NOT_FOUND)
             
             try:
                 account = Account.objects.get(bank_id=bank, account_code=account_code)
             except Account.DoesNotExist:
-                print(bank, account_code)
                 return Response({"error": "Счет не найден"}, status=status.HTTP_404_NOT_FOUND)
             
             # if Transaction.objects.filter(account_id=account, amount=amount, type=type, date=date, subtype=subtype).exists():
@@ -88,9 +85,10 @@ class WebhookAPIView(APIView):
             date_str = data.get('creation_date')
             account_code = int(data.get('account_code'))
             bank_code = int(data.get('bank_code'))
+            creator = data.get('creator')
             
-            if not all([amount, period, period_type, date_str, account_code, bank_code]):
-                return Response({"error": f"Нет всех обязательных полей {[amount, period, period_type, date_str, account_code, bank_code]}"}, status=status.HTTP_400_BAD_REQUEST)
+            if not all([amount, period, period_type, date_str, account_code, bank_code, creator]):
+                return Response({"error": f"Нет всех обязательных полей {[amount, period, period_type, date_str, account_code, bank_code, creator]}"}, status=status.HTTP_400_BAD_REQUEST)
 
             date = parse_datetime(date_str) if date_str else None
 
@@ -108,7 +106,8 @@ class WebhookAPIView(APIView):
                 amount=amount,
                 date=date,
                 period=period,
-                period_type=period_type
+                period_type=period_type,
+                creator=creator
             )
             if not account.isHide:
                 channel_layer = get_channel_layer()
@@ -123,7 +122,8 @@ class WebhookAPIView(APIView):
                         'period_type': period_type,
                         'period': period,
                         'date': date.strftime("%Y-%m-%d %H:%M:%S") if date else None,
-                        'user_id': account.user_id.id
+                        'user_id': account.user_id.id,
+                        'creator':creator
                     }
                 )
 

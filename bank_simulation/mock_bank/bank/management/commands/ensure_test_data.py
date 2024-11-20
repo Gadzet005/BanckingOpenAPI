@@ -17,6 +17,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Superuser successfully get_or_created.")
         except:
             self.stdout.write("Superuser already exists.")
+            return
 
         bank1, _ = Bank.objects.get_or_create(name="KG Bank", bank_code=100000000)
         bank2, _ = Bank.objects.get_or_create(name="VEDB", bank_code=100000001)
