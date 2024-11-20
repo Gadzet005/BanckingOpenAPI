@@ -20,6 +20,7 @@ import Wheel from "/wheel.png";
 import { NavItem } from "./NavItem";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { mochaColors } from "../../public/colors";
 
 export const Header = observer(() => {
   const location = useLocation();
@@ -70,7 +71,7 @@ export const Header = observer(() => {
       return (
         <MenuItem
           sx={{
-            bgcolor: "mochaMantle.base",
+            bgcolor: mochaColors.base,
           }}
           key={idx}
           onClick={() => {
@@ -90,7 +91,7 @@ export const Header = observer(() => {
 
   return (
     <AppBar
-      sx={{ mb: 3, bgcolor: "mochaMantle.main" }}
+      sx={{ mb: 3, bgcolor: mochaColors.mantle }}
       color="transparent"
       position="static"
       enableColorOnDark
@@ -137,7 +138,7 @@ export const Header = observer(() => {
           >
             <Tooltip title="Пользователь">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar sx={{ bgcolor: "primary.main" }}>
+                <Avatar sx={{ bgcolor: mochaColors.blue }}>
                   {user.email ? user.email[0].toUpperCase() : null}
                 </Avatar>
               </IconButton>

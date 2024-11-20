@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import ChartImage from "./imgs/chartImage.png";
+import { mochaColors } from "../../public/colors";
 
 export const Home: FC = () => {
   return (
@@ -15,7 +16,7 @@ export const Home: FC = () => {
       <Container maxWidth="lg">
         <Box
           sx={{
-            bgcolor: "mochaMantle.main",
+            bgcolor: mochaColors.mantle,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

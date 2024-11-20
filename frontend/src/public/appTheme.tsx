@@ -8,20 +8,7 @@ import React from "react";
 import * as materialLocales from "@mui/material/locale";
 import * as dataGridLocales from "@mui/x-data-grid/locales";
 import { mochaColors } from "./colors";
-
-declare module "@mui/material/styles" {
-  interface Palette {
-    mochaBase: Palette["primary"];
-    mochaMantle: Palette["primary"];
-    mochaCrust: Palette["primary"];
-  }
-
-  interface PaletteOptions {
-    mochaBase?: PaletteOptions["primary"];
-    mochaMantle?: PaletteOptions["primary"];
-    mochaCrust?: PaletteOptions["primary"];
-  }
-}
+import type {} from "@mui/x-data-grid/themeAugmentation";
 
 const LinkBehavior = React.forwardRef<
   HTMLAnchorElement,
@@ -76,17 +63,10 @@ export const appTheme = createTheme(
         secondary: mochaColors.subtext1,
         primary: mochaColors.text,
       },
-      mochaBase: {
-        main: mochaColors.base,
-        dark: mochaColors.base,
-      },
-      mochaMantle: {
-        main: mochaColors.mantle,
-        dark: mochaColors.mantle,
-      },
-      mochaCrust: {
-        main: mochaColors.crust,
-        dark: mochaColors.crust,
+    },
+    mixins: {
+      MuiDataGrid: {
+        containerBackground: mochaColors.mantle,
       },
     },
   },

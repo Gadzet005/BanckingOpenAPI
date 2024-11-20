@@ -14,6 +14,7 @@ import { register } from "../../api/user";
 import { useGetUser } from "../../public/user";
 import { Path } from "../../routing/path";
 import { PasswordField } from "../form/PasswordField";
+import { mochaColors } from "../../public/colors";
 
 interface RegisterFormState {
   formError?: string;
@@ -74,7 +75,7 @@ export const Register = observer(() => {
       }}
     >
       <Container
-        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: "mochaBase.main" }}
+        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: mochaColors.base }}
         maxWidth="sm"
       >
         <Box sx={{ textAlign: "center", mb: 2 }}>

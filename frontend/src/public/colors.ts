@@ -1,4 +1,4 @@
-export enum mochaColors {
+export const enum mochaColors {
     rosewater = "#f5e0dc",
     flamingo = "#f2cdcd",
     pink = "#f5c2e7",

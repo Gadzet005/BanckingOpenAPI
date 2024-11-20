@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { mochaColors } from "../../public/colors";
 
 export const Account = observer(() => {
   const user = useGetUser();
@@ -20,7 +21,7 @@ export const Account = observer(() => {
       }}
     >
       <Container
-        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: "mochaBase.main" }}
+        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: mochaColors.base }}
         maxWidth="sm"
       >
         <Stack spacing={3}>
@@ -30,7 +31,7 @@ export const Account = observer(() => {
               justifyContent: "center",
             }}
           >
-            <Avatar sx={{ bgcolor: "primary.main", width: 64, height: 64 }}>
+            <Avatar sx={{ bgcolor: mochaColors.blue, width: 64, height: 64 }}>
               {user.email![0].toUpperCase()}
             </Avatar>
           </Box>
