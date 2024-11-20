@@ -276,14 +276,14 @@ class MakeTransaction(APIView):
     schema = {
         "type": "object",
         "properties": {
-            "account_from": {"type": "integer"},
-            "account_to": {"type": "integer"},
+            "from": {"type": "integer"},
+            "to": {"type": "integer"},
             "bank_from": {"type": "string"},
             "bank_to": {"type": "string"},
             "amount": {"type": "integer"},
             "category": {"type": "string"},
         },
-        "required": ["account_from", "account_to", "bank_from", "bank_to", "amount", "category"]
+        "required": ["from", "to", "bank_from", "bank_to", "amount", "category"]
     }
 
     def post(self, request):
@@ -303,6 +303,7 @@ class MakeTransaction(APIView):
             bank_from_obj = Bank.objects.get(name=bank_from)
             bank_to_obj = Bank.objects.get(name=bank_to)
         except ObjectDoesNotExist:
+            print([account_from, account_to, bank_from, bank_to, amount, category,])
             return Response({"message": f"{[account_from, account_to]}]"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             with transaction.atomic():
