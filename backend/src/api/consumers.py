@@ -53,6 +53,7 @@ class TransactionConsumer(AsyncWebsocketConsumer):
     async def send_transaction(self, event):
         if event['user_id'] == self.user_id:
             await self.send(text_data=json.dumps({
+                'event_type': "transaction",
                 'bank_code': event['bank_code'],
                 'bank_name': event['bank_name'],
                 'account_code': event['account_code'],
@@ -60,6 +61,19 @@ class TransactionConsumer(AsyncWebsocketConsumer):
                 'type': event['transaction_type'],
                 'subtype': event['transaction_subtype'],
                 'balance': event['balance'],
+                'date': event['date']
+            }))
+
+    async def send_payment(self, event):
+        if event['user_id'] == self.user_id:
+            await self.send(text_data=json.dumps({
+                'event_type': "periodic_payment",
+                'bank_code': event['bank_code'],
+                'bank_name': event['bank_name'],
+                'account_code': event['account_code'],
+                'amount': event['amount'],
+                'period': event['period'],
+                'period_type': event['period_type'],
                 'date': event['date']
             }))
 
