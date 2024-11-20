@@ -45,7 +45,7 @@ class AuthView(APIView):
                     accounts = Account.objects.filter(user=user, bank=bank)
 
                     for account in accounts:
-                        transactions_list = []
+                        data_list = []
 
                         transactions = Transaction.objects.filter(
                             account_from_id=account
@@ -59,13 +59,25 @@ class AuthView(APIView):
                             else:
                                 amount = transaction.quantity
 
-                            transactions_list.append({
+                            data_list.append({
                                 "amount": int(amount),
                                 "date": transaction.date_time.isoformat(),
                                 "category": transaction.category,
+                                "data": "transaction"
+                            })
+                        
+                        payments = PeriodicPayment.objects.filter(account_from_id=account)
+                        for payment in payments:
+                            data_list.append({
+                                "amount": payment.amount,
+                                "date": payment.creation_tyme.isoformat(),
+                                "creator": payment.creator,
+                                "period": payment.period,
+                                "period_type": payment.period_type,
+                                "data": "period_payment"
                             })
                         subscription = Subscriptions.objects.create(account_id=account, url='http://backend:8000/webhook/')
-                        accounts_data[account.account_number] = transactions_list
+                        accounts_data[account.account_number] = data_list
 
                     return Response(
                         {

@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 import requests
-from banking.models import Bank, Account, Transaction, UserAccount
+from banking.models import Bank, Account, Transaction, UserAccount, PeriodicPayment
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -44,7 +44,7 @@ class RegisterView(APIView):
                             useraccount = UserAccount.objects.create(user_id=user,
                                                                     access_token = encoded_jwt,
                                                                     refresh_token = refresh_token)
-                        for account_code, transactions in accounts_data.items():
+                        for account_code, data in accounts_data.items():
                             
                             account, created = Account.objects.get_or_create(
                                 user_id=user,
@@ -53,28 +53,41 @@ class RegisterView(APIView):
                             )
 
 
-                            for transaction_data in transactions:
-                                amount = transaction_data["amount"]
-                                if amount<0:
-                                    transaction_type = "expense"
-                                else:
-                                    transaction_type = "income"
-                                try:
-                                    Transaction.objects.create(
-                                        account_id=account,
-                                        amount=abs(transaction_data["amount"]),
-                                        type=transaction_type,
-                                        subtype=transaction_data["category"],
-                                        date=transaction_data["date"]
-                                    )
-                                except:
-                                    Transaction.objects.create(
-                                        account_id=account,
-                                        amount=abs(transaction_data["amount"]),
-                                        type=transaction_type,
-                                        subtype="transfer",
-                                        date=transaction_data["date"]
-                                    )
+                            for item in data:
+                                if item["data"] == "transaction":
+                                    amount = item["amount"]
+                                    if amount<0:
+                                        transaction_type = "expense"
+                                    else:
+                                        transaction_type = "income"
+                                    try:
+                                        Transaction.objects.create(
+                                            account_id=account,
+                                            amount=abs(item["amount"]),
+                                            type=transaction_type,
+                                            subtype=item["category"],
+                                            date=item["date"]
+                                        )
+                                    except:
+                                        Transaction.objects.create(
+                                            account_id=account,
+                                            amount=abs(item["amount"]),
+                                            type=transaction_type,
+                                            subtype="transfer",
+                                            date=item["date"]
+                                        )
+                                elif item["data"] == "period_payment":
+                                    try:
+                                        PeriodicPayment.objects.create(
+                                            account_id=account,
+                                            amount=int(item["amount"]),
+                                            date=item["date"],
+                                            period=item["period"],
+                                            period_type=item["period_type"]
+                                        )
+                                    except:
+                                        pass
+
 
                         response.raise_for_status()
                     except requests.RequestException as e:
