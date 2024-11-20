@@ -5,7 +5,8 @@ from .views import (MakeTransaction,
                     UnsubscribeView,
                     AccountInfoView,
                     RefreshView,
-                    GetTransactions)
+                    GetTransactions,
+                    CreatePeriodicPaymentView)
 
 urlpatterns = [
     path(
@@ -42,5 +43,10 @@ urlpatterns = [
         'refresh/',
         RefreshView.as_view(),
         name='refresh'
+    ),
+path(
+        'make_periodic_payment/',
+        CreatePeriodicPaymentView.as_view(),
+        name='make_periodic_payment'
     )
 ]

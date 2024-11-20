@@ -8,8 +8,9 @@ from jwt import encode, decode, ExpiredSignatureError
 from requests import post
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from jsonschema import validate, ValidationError
 
-from .models import User, Subscriptions, Account, Bank, Transaction
+from .models import User, Subscriptions, Account, Bank, Transaction, PeriodicPayment
 from .serializers import TransactionSerializer
 from datetime import datetime, timedelta
 from django.utils.dateparse import parse_datetime
@@ -269,12 +270,12 @@ class MakeTransaction(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        account_from = self.request.POST.get("from")
-        account_to = self.request.POST.get("to")
-        bank_from = self.request.POST.get("bank_from")
-        bank_to = self.request.POST.get("bank_to")
-        amount = self.request.POST.get("amount")
-        category = self.request.POST.get("category")
+        account_from = json.loads(request.body).get("from")
+        account_to = json.loads(request.body).get("to")
+        bank_from = json.loads(request.body).get("bank_from")
+        bank_to = json.loads(request.body).get("bank_to")
+        amount = json.loads(request.body).get("amount")
+        category = json.loads(request.body).get("category")
         try:
             account_from_obj = Account.objects.get(account_number=account_from)
             account_to_obj = Account.objects.get(account_number=account_to)
@@ -303,6 +304,7 @@ class MakeTransaction(APIView):
         try:
             url1 = Subscriptions.objects.filter(account_id=account_from_obj)
             data = {
+                "event_type": "transaction",
                 "account_code": account_from_obj.account_number,
                 "bank_code": bank_from_obj.bank_code,
                 "amount": -int(amount),
@@ -323,6 +325,7 @@ class MakeTransaction(APIView):
             url2 = Subscriptions.objects.filter(account_id=account_to_obj)
             print(url2)
             data = {
+                "event_type": "transaction",
                 "account_code": account_to_obj.account_number,
                 "bank_code": bank_to_obj.bank_code,
                 "amount": int(amount),
@@ -365,6 +368,77 @@ class RefreshView(APIView):
                     status=status.HTTP_200_OK
                 )
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreatePeriodicPaymentView(APIView):
+    permission_classes = [AllowAny]
+
+    schema = {
+        "type": "object",
+        "properties": {
+            "from": {"type": "integer"},
+            "to": {"type": "integer"},
+            "amount": {"type": "integer"},
+            "creator": {"type": "string"},
+            "period_type": {"type": "string"},
+            "period": {"type": "integer"},
+        },
+        "required": ["from", "to", "amount", "period_type", "period"]
+    }
+
+    def post(self, request):
+        try:
+            validate(instance=json.loads(request.body), schema=self.schema)
+        except ValidationError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        print(123)
+        account_from = json.loads(request.body).get("from")
+        account_to = json.loads(request.body).get("to")
+        amount = json.loads(request.body).get("amount")
+        creator = json.loads(request.body).get("creator", "")
+        period_type = json.loads(request.body).get("period_type")
+        period = json.loads(request.body).get("period")
+        try:
+            account_from_obj = Account.objects.get(account_number=account_from)
+            account_to_obj = Account.objects.get(account_number=account_to)
+        except ObjectDoesNotExist:
+            return Response({"message": f"{[account_from, account_to]}]"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        try:
+                PeriodicPayment.objects.create(
+                    account_from_id=account_from_obj,
+                    account_to_id=account_to_obj,
+                    amount=amount,
+                    creator=creator,
+                    period_type=period_type,
+                    period=period,
+                )
+                account_from_obj.balance -= int(amount)
+                account_from_obj.save()
+                account_to_obj.balance += int(amount)
+                account_to_obj.save()
+        except IntegrityError:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        date = datetime.now()
+        try:
+            url1 = Subscriptions.objects.filter(account_id=account_from_obj)
+            data = {
+                    "event_type": "subscribe",
+                    "amount": amount,
+                    "owner": creator,
+                    "period_type": period_type,
+                    "period": period,
+                    "creation_date": date
+                    }
+            try:
+                for i in url1:
+                    request1 = post(i.url, data=data)
+            except Exception:
+                pass
+        except ObjectDoesNotExist:
+            pass
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class CreateAccount(APIView):
     permission_classes = [AllowAny]
