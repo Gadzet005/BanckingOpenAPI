@@ -276,7 +276,9 @@ class GetTransactions(APIView):
                 date_time__gte=date_from, account_to_id__user=user
             )
         else:
-            transactions = Transaction.objects.filter(account_from_id__user=user)
+            transactions = Transaction.objects.filter(
+                account_from_id__user=user
+            ) | Transaction.objects.filter(account_to_id__user=user)
         transactions = TransactionSerializer(transactions, many=True)
         return Response(transactions.data, status=status.HTTP_200_OK)
 

@@ -10,6 +10,7 @@ TYPES_OF_TRANSACTION = [
     ("transfer", "Перевод"),
     ("salary", "Зарплата"),
     ("investment", "Инвестиции"),
+    ("gift", "Подарок"),
 ]
 
 PERIOD_CHOICE = [("days", "Дни"), ("months", "Месяцы"), ("years", "Годы")]
