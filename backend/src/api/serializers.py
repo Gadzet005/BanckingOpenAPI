@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from banking.models import Transaction, Account, UserAccount, Bank
+from banking.models import Transaction, Account, UserAccount, Bank, PeriodicPayment
 from rest_framework.exceptions import ValidationError
 import requests
 
@@ -64,3 +64,12 @@ class AccountSerializer(serializers.ModelSerializer):
             balance = data.get("balance")
             return int(balance)
         return None
+
+class PeriodicPaymentSerializer(serializers.ModelSerializer):
+    account_code = serializers.IntegerField(source='account_id.account_code', read_only=True)
+    bank_name = serializers.CharField(source='account_id.bank_id.name', read_only=True)
+    bank_code = serializers.IntegerField(source='account_id.bank_id.bank_code', read_only=True)
+
+    class Meta:
+        model = PeriodicPayment
+        fields = ['id', 'amount', 'period', 'period_type', 'creator', 'date', 'account_code', 'bank_name', 'bank_code']
