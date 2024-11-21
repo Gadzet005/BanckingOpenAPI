@@ -58,7 +58,7 @@ class UserAccountsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_accounts = Account.objects.filter(user_id=request.user, isHide=False)
+        user_accounts = Account.objects.filter(user_id=request.user)
         serializer = AccountSerializer(user_accounts, many=True, context={'request': request})
         return Response(serializer.data)
     
