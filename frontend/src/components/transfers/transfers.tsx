@@ -6,7 +6,7 @@ import {
   GridColDef,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
-import { getTransfers } from "../../api/transfer";
+import { getTransfers } from "../../api/transfer.ts";
 import { ITransfer } from "../../public/transfer/itransfer";
 import { mochaColors } from "../../public/style/colors";
 import { TransferWebSocket } from "../../public/transfer/websocket";

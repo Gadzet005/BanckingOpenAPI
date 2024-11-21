@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup, Tab, Tabs } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { getTransfers } from "../../api/transfer";
+import { getTransfers } from "../../api/transfer.ts";
 import { ITransfer } from "../../public/transfer/itransfer";
 import { TransferStore } from "../../public/transfer/transferStore";
 import { TransferChart } from "./TransferChart";
