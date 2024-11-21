@@ -25,8 +25,8 @@ class AccountSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         try:
             useraccount = UserAccount.objects.filter(user_id = user)[0]
-        except UserAccount.DoesNotExist:
-            raise ValidationError("Профиль пользователя не найден")
+        except:
+            return None
         url = "http://bank:5000/getinfo/"
         headers = {
             "Authorization": f"Bearer {useraccount.access_token}"
