@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { mochaColors } from "../../public/colors";
+import { mochaColors } from "../../public/style/colors";
 
 export const Account = observer(() => {
   const user = useGetUser();

@@ -1,5 +1,5 @@
-export type TransactionType = "income" | "expense";
-export type TransactionCategory =
+export type TransferType = "income" | "expense";
+export type TransferCategory =
     | "salary"
     | "gift"
     | "investment"
@@ -10,13 +10,13 @@ export type TransactionCategory =
     | "utilities"
     | "other";
 
-export interface ITransaction {
+export interface ITransfer {
     id: number;
     amount: number;
     date: Date;
     account_code: number;
     bank_name: string;
     bank_code: number;
-    type: TransactionType;
-    category: TransactionCategory;
+    type: TransferType;
+    category: TransferCategory;
 }

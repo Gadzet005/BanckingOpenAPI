@@ -24,7 +24,7 @@ export const PasswordField: FC<PasswordFieldProps> = ({
   error = false,
   helperText = "",
 }) => {
-  const [isVisible, setIsVisible] = useState(() => false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleClickShowPassword = () => setIsVisible((isVisible) => !isVisible);
 

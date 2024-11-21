@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import ChartImage from "./imgs/chartImage.png";
-import { mochaColors } from "../../public/colors";
+import { mochaColors } from "../../public/style/colors";
 
 export const Home: FC = () => {
   return (

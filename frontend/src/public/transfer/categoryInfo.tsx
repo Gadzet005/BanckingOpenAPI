@@ -7,7 +7,7 @@ import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import { mochaColors } from "../../../public/colors";
+import { mochaColors } from "../style/colors";
 
 interface CategoryInfo {
   name: string;

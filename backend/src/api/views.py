@@ -1,8 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from banking.models import Transaction, Account, UserAccount
-from .serializers import TransactionSerializer, AccountSerializer
+from banking.models import Transaction, Account, UserAccount, PeriodicPayment
+from .serializers import (
+    TransactionSerializer,
+    AccountSerializer,
+    PeriodicPaymentSerializer,
+)
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 import requests
@@ -35,11 +39,35 @@ class UserTransactionsView(APIView):
         return Response(serializer.data)
 
 
+class UserPeriodicPaymentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        start_date = request.query_params.get("start_date")
+        end_date = request.query_params.get("end_date")
+
+        user_accounts = Account.objects.filter(user_id=request.user, isHide=False)
+
+        payments = PeriodicPayment.objects.filter(account_id__in=user_accounts)
+
+        if start_date:
+            start_date = parse_datetime(start_date)
+            if start_date:
+                payments = payments.filter(date__gte=start_date)
+        if end_date:
+            end_date = parse_datetime(end_date)
+            if end_date:
+                payments = payments.filter(date__lte=end_date)
+
+        serializer = PeriodicPaymentSerializer(payments, many=True)
+        return Response(serializer.data)
+
+
 class UserAccountsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_accounts = Account.objects.filter(user_id=request.user, isHide=False)
+        user_accounts = Account.objects.filter(user_id=request.user)
         serializer = AccountSerializer(
             user_accounts, many=True, context={"request": request}
         )

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import TransactionWebhookAPIView
+from .views import WebhookAPIView
 
 urlpatterns = [
-    path('webhook/transaction/', TransactionWebhookAPIView.as_view(), name='transaction_webhook'),
+    path("webhook/", WebhookAPIView.as_view(), name="webhook"),
 ]

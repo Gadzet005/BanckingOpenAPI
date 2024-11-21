@@ -1,31 +1,23 @@
-import { FC } from "react";
-import { ChartProps } from "./chartProps";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts";
-import { categoryInfo } from "../store/category";
-import { observer } from "mobx-react-lite";
-import { mochaColors } from "../../../public/colors";
+import React from "react";
+import { mochaColors } from "../../../public/style/colors";
+import { categoryInfo } from "../../../public/transfer/categoryInfo";
+import { ChartProps } from "./chartProps";
 
-export const CategoryPieChart: FC<ChartProps> = observer(({ store }) => {
-  const transactions = store.list;
-  const categoryMap = new Map<string, number>();
+export const CategoryPieChart: React.FC<ChartProps> = ({ list }) => {
+  const categories: Record<string, number> = {};
 
-  transactions.forEach((transaction) => {
-    categoryMap.set(
-      transaction.getCategory(),
-      (categoryMap.get(transaction.getCategory()) || 0) + transaction.amount,
-    );
+  let totalAmount = 0;
+  list.forEach((transfer) => {
+    const category = transfer.getCategory();
+    categories[category] = (categories[category] || 0) + transfer.amount;
+    totalAmount += transfer.amount;
   });
 
-  const totalAmount = transactions.reduce((sum, transaction) => {
-    return sum + transaction.amount;
-  }, 0);
-
-  const pieData: Array<{ name: string; value: number }> = Array.from(
-    categoryMap.entries(),
-  ).map(([category, amount]) => ({
-    name: category,
-    value: amount,
-  }));
+  const pieData: Array<{ name: string; value: number }> = [];
+  for (const [key, value] of Object.entries(categories)) {
+    pieData.push({ name: key, value });
+  }
 
   return (
     <PieChart
@@ -53,6 +45,7 @@ export const CategoryPieChart: FC<ChartProps> = observer(({ store }) => {
           valueFormatter: (item) => `${item.value}₽`,
         },
       ]}
+      margin={{ right: 200 }}
       sx={{
         [`& .${pieArcLabelClasses.root}`]: {
           fontWeight: "bold",
@@ -61,4 +54,4 @@ export const CategoryPieChart: FC<ChartProps> = observer(({ store }) => {
       }}
     />
   );
-});
+};

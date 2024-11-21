@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from users.models import CustomUser
 from django.db.models import UniqueConstraint
+from datetime import datetime
 
 User = get_user_model()
 
@@ -83,3 +84,12 @@ class UserAccount(models.Model):
     access_token = models.CharField(max_length=255)
     refresh_token = models.CharField(max_length=255)
     date = models.DateField(null=True)
+
+
+class PeriodicPayment(models.Model):
+    account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    period_type = models.CharField(max_length=100)
+    period = models.IntegerField()
+    date = models.DateTimeField(default=datetime.now)
+    creator = models.CharField(max_length=255, default="")

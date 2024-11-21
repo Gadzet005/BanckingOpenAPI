@@ -1,4 +1,32 @@
-export function getStartOfWeek(date: Date) {
+export const periodList = ["all", "year", "month", "week", "day"] as const;
+export type DatePeriod = (typeof periodList)[number];
+
+export const months = [
+    "Яынварь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+];
+
+export const weekDays = [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+    "Воскресенье",
+];
+
+function getStartOfWeek(date: Date) {
     const day = date.getDay();
     const diff = date.getDate() - day + (day === 0 ? -6 : 1);
 
@@ -55,4 +83,32 @@ export function formatDate(inputDate: Date) {
             minute: "2-digit",
         });
     }
+}
+
+export function getStartDateForPeriod(period: DatePeriod): Date {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (period === "day") {
+        return today;
+    } else if (period === "week") {
+        return getStartOfWeek(today);
+    } else if (period === "month") {
+        today.setDate(1);
+        return today;
+    } else if (period === "year") {
+        today.setMonth(0);
+        today.setDate(1);
+        return today;
+    }
+    return new Date(0);
+}
+
+export function getDaysInCurrentMonth() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    return lastDayOfMonth.getDate();
 }

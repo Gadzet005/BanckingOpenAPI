@@ -16,11 +16,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Path } from "../../routing/path";
-import Wheel from "/wheel.png";
+import Ship from "/ship.png";
 import { NavItem } from "./NavItem";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { mochaColors } from "../../public/colors";
+import { mochaColors } from "../../public/style/colors";
 
 export const Header = observer(() => {
   const location = useLocation();
@@ -103,9 +103,9 @@ export const Header = observer(() => {
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Box
-              sx={{ height: "32px", width: "32px", mr: 1 }}
+              sx={{ height: "64px", width: "64px", mr: 1 }}
               component="img"
-              src={Wheel}
+              src={Ship}
             />
             <Link
               variant="h6"
@@ -113,7 +113,7 @@ export const Header = observer(() => {
               sx={{
                 mr: 2,
                 textDecoration: "none",
-                color: "text.secondary",
+                color: mochaColors.text,
               }}
             >
               Тонущий корабль

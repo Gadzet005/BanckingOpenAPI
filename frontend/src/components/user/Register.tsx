@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../../api/user";
 import { useGetUser } from "../../public/user";
 import { Path } from "../../routing/path";
-import { PasswordField } from "../form/PasswordField";
-import { mochaColors } from "../../public/colors";
+import { PasswordField } from "../public/form/PasswordField";
+import { mochaColors } from "../../public/style/colors";
 
 interface RegisterFormState {
   formError?: string;
@@ -29,9 +29,8 @@ export const Register = observer(() => {
   const navigate = useNavigate();
 
   const [state, setState] = useState<RegisterFormState>(() => ({}));
-  const [waitingRegistration, setWaitingRegistration] = useState<boolean>(
-    () => false,
-  );
+  const [waitingRegistration, setWaitingRegistration] =
+    useState<boolean>(false);
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

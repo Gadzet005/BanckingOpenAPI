@@ -1,31 +1,27 @@
 import { Avatar } from "@mui/material";
-import {
-  ITransaction,
-  TransactionCategory,
-  TransactionType,
-} from "../../../public/transaction";
-import { formatDate } from "../../../public/utils";
-import { categoryInfo } from "./category";
+import { ITransfer, TransferCategory, TransferType } from "./itransfer";
+import { formatDate } from "./dateUtils";
+import { categoryInfo } from "./categoryInfo";
 
-export class Transaction implements Transaction {
+export class Transfer implements ITransfer {
   id: number;
   amount: number;
   date: Date;
   account_code: number;
   bank_name: string;
   bank_code: number;
-  type: TransactionType;
-  category: TransactionCategory;
+  type: TransferType;
+  category: TransferCategory;
 
-  constructor(transaction: ITransaction) {
-    this.id = transaction.id;
-    this.amount = transaction.amount;
-    this.date = transaction.date;
-    this.account_code = transaction.account_code;
-    this.bank_name = transaction.bank_name;
-    this.bank_code = transaction.bank_code;
-    this.type = transaction.type;
-    this.category = transaction.category;
+  constructor(transfer: ITransfer) {
+    this.id = transfer.id;
+    this.amount = transfer.amount;
+    this.date = transfer.date;
+    this.account_code = transfer.account_code;
+    this.bank_name = transfer.bank_name;
+    this.bank_code = transfer.bank_code;
+    this.type = transfer.type;
+    this.category = transfer.category;
   }
 
   get formattedDate(): string {

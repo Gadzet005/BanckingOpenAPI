@@ -4,12 +4,17 @@ import { internal } from "./internal";
 export const navList: Array<internal.HeaderLinkItem> = [
     {
         name: "Обзор",
-        path: Path.dataView,
+        path: Path.transferStatistics,
         type: internal.HeaderItemType.onlyForAuth,
     },
     {
-        name: "Операции",
-        path: Path.transactions,
+        name: "Переводы",
+        path: Path.transfers,
+        type: internal.HeaderItemType.onlyForAuth,
+    },
+    {
+        name: "Счета",
+        path: Path.bankAccounts,
         type: internal.HeaderItemType.onlyForAuth,
     },
 ];

@@ -1,7 +1,7 @@
 import { LineChart } from "@mui/x-charts";
 import { FC } from "react";
-import { linearRegressionLine, linearRegression } from "simple-statistics";
-import { mochaColors } from "../../../public/colors";
+import { linearRegression, linearRegressionLine } from "simple-statistics";
+import { mochaColors } from "../../../../public/style/colors";
 
 interface BaseLineChartProps {
   axisData: number[];

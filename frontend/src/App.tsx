@@ -4,7 +4,7 @@ import { Header } from "./components/header/Header";
 import { AppRouter } from "./routing/AppRouter";
 import { User, UserContext } from "./public/user";
 import { Box, ThemeProvider } from "@mui/material";
-import { appTheme } from "./public/appTheme";
+import { appTheme } from "./public/style/appTheme";
 
 const App = () => {
   const [user] = useState(() => {
@@ -21,7 +21,7 @@ const App = () => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              height: "100vh",
+              height: "100%",
             }}
           >
             <Header />

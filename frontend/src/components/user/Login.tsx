@@ -13,15 +13,15 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../../api/user";
 import { useGetUser } from "../../public/user";
 import { Path } from "../../routing/path";
-import { PasswordField } from "../form/PasswordField";
-import { mochaColors } from "../../public/colors";
+import { PasswordField } from "../public/form/PasswordField";
+import { mochaColors } from "../../public/style/colors";
 
 export const Login = observer(() => {
   const user = useGetUser();
   const navigate = useNavigate();
 
-  const [formError, setFormError] = useState<string | null>(() => null);
-  const [waitingLogin, setWaitingLogin] = useState<boolean>(() => false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [waitingLogin, setWaitingLogin] = useState<boolean>(false);
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
