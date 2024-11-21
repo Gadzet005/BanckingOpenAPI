@@ -277,7 +277,7 @@ class GetTransactions(APIView):
         else:
             transactions = Transaction.objects.filter(
                 account_from_id__user=user
-            )
+            ) | Transaction.objects.filter( account_to_id__user=user)
         transactions = TransactionSerializer(transactions, many=True)
         return Response(transactions.data, status=status.HTTP_200_OK)
 
