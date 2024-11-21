@@ -84,6 +84,8 @@ class UpdateAccountVisibilityView(APIView):
                 data = {
                     "account_number": account.account_code
                 }
+                transactions_to_delete = Transaction.objects.filter(account_id=account)
+                transactions_to_delete.delete()
                 response = requests.post(url, headers=headers, data=data)
                 if response.status_code == 401:
                     response_token = requests.post(
@@ -142,20 +144,7 @@ class UpdateAccountVisibilityView(APIView):
                     }
                     response = requests.post(url, headers=headers, data=data)
                 
-                transaction_exist = False
-                try:
-                    transactions = Transaction.objects.get(account_id=account)
-                    transaction_exist = True
-                    latest_transaction = Transaction.objects.filter(account_id=account).order_by('-date').first()
-                except:
-                    pass
-                if transaction_exist:
-                    params = {
-                    "account_number": account.account_code,
-                    "from": str(latest_transaction.date+timedelta(seconds=1))
-                    }
-                else:
-                    params = {
+                params = {
                         "account_number": account.account_code
                     }
                 url = "http://bank:5000/get_transactions/"
