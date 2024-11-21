@@ -51,6 +51,13 @@ class RegisterView(APIView):
                         for account_code, data in accounts_data.items():
 
                             account, created = Account.objects.get_or_create(
+                                user_id=user,
+                                access_token=encoded_jwt,
+                                refresh_token=refresh_token,
+                            )
+                        for account_code, data in accounts_data.items():
+
+                            account, created = Account.objects.get_or_create(
                                 user_id=user, bank_id=bank, account_code=account_code
                             )
 

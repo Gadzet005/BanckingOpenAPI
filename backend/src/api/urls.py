@@ -10,7 +10,7 @@ urlpatterns = [
     path("transactions/", UserTransactionsView.as_view(), name="all_transactions"),
     path("accounts/", UserAccountsView.as_view(), name="all_transactions"),
     path(
-        "changevisibility/<int:account_id>/",
+        "changevisbility/<int:account_id>/",
         UpdateAccountVisibilityView.as_view(),
         name="change_visibility",
     ),

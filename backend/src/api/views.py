@@ -92,6 +92,8 @@ class UpdateAccountVisibilityView(APIView):
                 url = "http://bank:5000/unsubscribe/"
                 headers = {"Authorization": f"Bearer {useraccount.access_token}"}
                 data = {"account_number": account.account_code}
+                transactions_to_delete = Transaction.objects.filter(account_id=account)
+                transactions_to_delete.delete()
                 response = requests.post(url, headers=headers, data=data)
                 if response.status_code == 401:
                     response_token = requests.post(
@@ -121,7 +123,7 @@ class UpdateAccountVisibilityView(APIView):
                 headers = {"Authorization": f"Bearer {useraccount.access_token}"}
                 data = {
                     "account_number": account.account_code,
-                    "url": "http://backend:8000/webhook/transaction/",
+                    "url": "http://backend:8000/webhook/",
                 }
                 response = requests.post(url, headers=headers, data=data)
                 if response.status_code == 401:
@@ -146,24 +148,7 @@ class UpdateAccountVisibilityView(APIView):
                     }
                     response = requests.post(url, headers=headers, data=data)
 
-                transaction_exist = False
-                try:
-                    transactions = Transaction.objects.get(account_id=account)
-                    transaction_exist = True
-                    latest_transaction = (
-                        Transaction.objects.filter(account_id=account)
-                        .order_by("-date")
-                        .first()
-                    )
-                except:
-                    pass
-                if transaction_exist:
-                    params = {
-                        "account_number": account.account_code,
-                        "from": str(latest_transaction.date + timedelta(seconds=1)),
-                    }
-                else:
-                    params = {"account_number": account.account_code}
+                params = {"account_number": account.account_code}
                 url = "http://bank:5000/get_transactions/"
                 headers = {"Authorization": f"Bearer {useraccount.access_token}"}
                 response = requests.get(url, headers=headers, params=params)

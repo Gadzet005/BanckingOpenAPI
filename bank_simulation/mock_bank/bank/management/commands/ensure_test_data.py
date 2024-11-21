@@ -37,19 +37,19 @@ class Command(BaseCommand):
             user=user1, account_number=100000, bank=bank1
         )
         account2, _ = Account.objects.get_or_create(
-            user=user1, account_number=100001, bank=bank2
+            user=user1, account_number=100001, bank=bank2, balance=200000
         )
         account3, _ = Account.objects.get_or_create(
-            user=user1, account_number=100002, bank=bank3
+            user=user1, account_number=100002, bank=bank3, balance=123456
         )
         account4, _ = Account.objects.get_or_create(
-            user=user2, account_number=100003, bank=bank1
+            user=user2, account_number=100003, bank=bank1, balance=100089
         )
         account5, _ = Account.objects.get_or_create(
-            user=user2, account_number=100004, bank=bank3
+            user=user2, account_number=100004, bank=bank3, balance=3007745
         )
         account6, _ = Account.objects.get_or_create(
-            user=user3, account_number=100005, bank=bank2
+            user=user3, account_number=100005, bank=bank2, balance=911900
         )
 
         Transaction.objects.get_or_create(
