@@ -119,7 +119,7 @@ class UpdateAccountVisibilityView(APIView):
                 }
                 data = {
                     "account_number": account.account_code,
-                    "url": 'http://backend:8000/webhook/transaction/',
+                    "url": 'http://backend:8000/webhook/',
                 }
                 response = requests.post(url, headers=headers, data=data)
                 if response.status_code == 401:
