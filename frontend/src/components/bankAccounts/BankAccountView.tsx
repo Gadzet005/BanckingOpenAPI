@@ -28,10 +28,10 @@ export const BankAccountView: React.FC<BankAccountViewProps> = ({
     >
       <Box>
         <Typography variant="h6">Банк: {account.bankName}</Typography>
-        <Typography variant="subtitle1">Счет: {account.code}</Typography>
+        <Typography variant="h6">Номер счета: {account.code}</Typography>
       </Box>
       <Typography variant="h4" sx={{ color: mochaColors.blue }}>
-        {account.balance} руб.
+        {account.balance}₽
       </Typography>
       <Box
         sx={{
@@ -41,9 +41,11 @@ export const BankAccountView: React.FC<BankAccountViewProps> = ({
           gap: 1,
         }}
       >
-        <Typography>{account.isHide ? "Скрыт" : "Отслеживается"}</Typography>
+        <Typography variant="h6">
+          {account.isHide ? "Скрыт" : "Отслеживается"}
+        </Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           disabled={hideToggleButtonDisabled}
           onClick={() => onHideToggleClick(account.code)}
         >

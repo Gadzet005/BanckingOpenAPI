@@ -24,6 +24,7 @@ export const toggleBankAccountVisibility = async (accountCode: number) => {
         await authBackend.post(`/changevisibility/${accountCode}/`);
         return true;
     } catch (error) {
+        console.log(error);
         return false;
     }
 };
