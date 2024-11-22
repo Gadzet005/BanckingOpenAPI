@@ -49,7 +49,10 @@ class AccountSerializer(serializers.ModelSerializer):
         if response.status_code == 401:
             response_token = requests.post(
                 "http://bank:5000/get_token/",
-                json={"phone_number": user.phone_number, "bank_code": self.bank_code},
+                json={
+                    "phone_number": user.phone_number,
+                    "bank_code": obj.bank_id.bank_code,
+                },
                 timeout=100,
             )
             response_data = response_token.json()
