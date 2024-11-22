@@ -1,30 +1,44 @@
-import { useNavigate } from "react-router-dom";
-import { Path } from "../../routing/path";
 import { useGetUser } from "../../public/user";
 import { observer } from "mobx-react-lite";
-import { Avatar, Button, Stack, TextField } from "@mui/material";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import {
+  Avatar,
+  Box,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { mochaColors } from "../../public/style/colors";
 
 export const Account = observer(() => {
   const user = useGetUser();
-  const navigate = useNavigate();
-
-  const logoutHandler = () => {
-    user.logout();
-    navigate(Path.loginPage);
-  };
 
   return (
-    <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8 rounded-4 p-4 mocha-bg-base">
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Container
+        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: mochaColors.base }}
+        maxWidth="sm"
+      >
         <Stack spacing={3}>
-          <div className="d-flex justify-content-center">
-            <Avatar sx={{ bgcolor: "#cba6f7", width: 64, height: 64 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Avatar sx={{ bgcolor: mochaColors.blue, width: 64, height: 64 }}>
               {user.email![0].toUpperCase()}
             </Avatar>
-          </div>
-          <div>
-            <p className="fs-2 mb-3 text-center">Основная информация</p>
+          </Box>
+          <Box>
+            <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
+              Основная информация
+            </Typography>
             <Stack spacing={2}>
               <TextField
                 variant="outlined"
@@ -47,21 +61,9 @@ export const Account = observer(() => {
                 }}
               />
             </Stack>
-          </div>
-          <div className="d-flex justify-content-center">
-            <Button
-              variant="contained"
-              color="error"
-              size="large"
-              onClick={logoutHandler}
-              startIcon={<ExitToAppIcon sx={{ color: "#1e1e2e" }} />}
-              fullWidth
-            >
-              Выйти
-            </Button>
-          </div>
+          </Box>
         </Stack>
-      </div>
-    </div>
+      </Container>
+    </Box>
   );
 });

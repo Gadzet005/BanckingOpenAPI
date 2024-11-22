@@ -3,5 +3,7 @@ export enum Path {
     loginPage = "/login",
     registerPage = "/register",
     accountPage = "/account",
-    transactions = "/transactions",
+    transferStatistics = "/transfers-statistics",
+    transfers = "/transfers",
+    bankAccounts = "/bank-accounts",
 }

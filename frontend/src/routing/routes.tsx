@@ -3,7 +3,9 @@ import { Home } from "../components/home/Home";
 import { Login } from "../components/user/Login";
 import { Register } from "../components/user/Register";
 import { Account } from "../components/user/Account";
-import { TransactionsInfo } from "../components/transactions/TransactionsInfo";
+import { TransferStatistics } from "../components/transfersStatistics/TransferStatistics";
+import { Transfers } from "../components/transfers/transfers";
+import { BankAccounts } from "../components/bankAccounts/BankAccounts";
 
 export const publicRoutes = [
   {
@@ -26,7 +28,15 @@ export const authRoutes = [
     component: <Account />,
   },
   {
-    path: Path.transactions,
-    component: <TransactionsInfo />,
+    path: Path.transferStatistics,
+    component: <TransferStatistics />,
+  },
+  {
+    path: Path.transfers,
+    component: <Transfers />,
+  },
+  {
+    path: Path.bankAccounts,
+    component: <BankAccounts />,
   },
 ];

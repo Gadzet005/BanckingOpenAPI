@@ -1,18 +1,27 @@
-import { Alert, Button, TextField } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../api/user";
 import { useGetUser } from "../../public/user";
 import { Path } from "../../routing/path";
-import { PasswordField } from "../form/PasswordField";
+import { PasswordField } from "../public/form/PasswordField";
+import { mochaColors } from "../../public/style/colors";
 
 export const Login = observer(() => {
   const user = useGetUser();
   const navigate = useNavigate();
 
-  const [formError, setFormError] = useState<string | null>(() => null);
-  const [waitingLogin, setWaitingLogin] = useState<boolean>(() => false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [waitingLogin, setWaitingLogin] = useState<boolean>(false);
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,25 +43,43 @@ export const Login = observer(() => {
   };
 
   return (
-    <div className="d-flex justify-content-center">
-      <div className="col-lg-4 col-md-6 col-sm-8 rounded-4 p-4 mocha-bg-base mocha-border">
-        <div className="text-center">
-          <h1>Вход</h1>
-          <span className="fs-6 me-2">Нет аккаунта?</span>
-          <Link className="fs-6" to={Path.registerPage}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Container
+        sx={{ mx: 1, borderRadius: 4, p: 3, bgcolor: mochaColors.base }}
+        maxWidth="sm"
+      >
+        <Box sx={{ textAlign: "center", mb: 2 }}>
+          <Typography variant="h3">Вход</Typography>
+          <Typography component="span" variant="subtitle1">
+            Нет аккаунта?
+          </Typography>
+          <Link
+            sx={{ textDecoration: "none", ml: 1 }}
+            variant="subtitle1"
+            href={Path.registerPage}
+          >
             Страница регистрации
           </Link>
-        </div>
+        </Box>
 
-        <div className="d-flex justify-content-center my-3">
-          {formError && (
+        {formError && (
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
             <Alert severity="error" variant="filled">
               {formError}
             </Alert>
-          )}
-        </div>
+          </Box>
+        )}
 
-        <form className="d-grid gap-3" onSubmit={submitHandler}>
+        <Box
+          component="form"
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          onSubmit={submitHandler}
+        >
           <TextField
             name="email"
             variant="outlined"
@@ -68,8 +95,8 @@ export const Login = observer(() => {
           >
             Вход
           </Button>
-        </form>
-      </div>
-    </div>
+        </Box>
+      </Container>
+    </Box>
   );
 });

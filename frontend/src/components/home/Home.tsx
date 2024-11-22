@@ -1,22 +1,46 @@
 import { FC } from "react";
-import chartImage from "./imgs/chartImage.png";
+import { Box, Container, Typography } from "@mui/material";
+import ChartImage from "./imgs/chartImage.png";
+import { mochaColors } from "../../public/style/colors";
 
 export const Home: FC = () => {
   return (
-    <div>
-      <h1 className="text-center">Добро пожаловать!</h1>
-      <div className="d-flex justify-content-center">
-        <div className="col-6">
-          <p className="fs-5">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            bgcolor: mochaColors.mantle,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            borderRadius: 5,
+            p: 1,
+          }}
+        >
+          <Typography variant="h4">Добро пожаловать!</Typography>
+          <Typography variant="h6" sx={{ textAlign: "center" }}>
             Это финансовый помощник, который может отслеживать все ваши
-            банковские переводы в режиме реального времени, а так же
-            предоставлять статистику по расходам и доходам.
-          </p>
-        </div>
-      </div>
-      <div className="d-flex justify-content-center p-2">
-        <img height={500} width={1000} src={chartImage} />
-      </div>
-    </div>
+            банковские переводы в режиме реального времени и предоставлять
+            статистику по расходам и доходам.
+          </Typography>
+        </Box>
+      </Container>
+
+      <Container maxWidth="lg" sx={{ height: "100%", mt: 3 }}>
+        <Box
+          sx={{ width: "100%" }}
+          component="img"
+          src={ChartImage}
+          alt="Картинка с графиками"
+        />
+      </Container>
+    </Box>
   );
 };

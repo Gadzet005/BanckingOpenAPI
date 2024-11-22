@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from banking.models import Bank, Account, Transaction, UserAccount, PeriodicPayment
 
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -18,18 +19,20 @@ class RegisterView(APIView):
             user = serializer.save()
 
             refresh = RefreshToken.for_user(user)
-            refresh['email'] = user.email
-            refresh['phone_number'] = user.phone_number
+            refresh["email"] = user.email
+            refresh["phone_number"] = user.phone_number
 
             for bank in Bank.objects.all():
                 if bank.api_url:
                     try:
                         response = requests.post(
-                            bank.api_url+"/get_token/",
-                            json={"phone_number": user.phone_number,
-                                  "new": "True",
-                                  "bank_code": bank.bank_code},
-                            timeout=100
+                            bank.api_url + "/get_token/",
+                            json={
+                                "phone_number": user.phone_number,
+                                "new": "True",
+                                "bank_code": bank.bank_code,
+                            },
+                            timeout=100,
                         )
                         response_data = response.json()
                         encoded_jwt = response_data.get("jwt")
@@ -40,22 +43,28 @@ class RegisterView(APIView):
                             useraccount.access_token = encoded_jwt
                             useraccount.refresh_token = refresh_token
                         except:
-                            useraccount = UserAccount.objects.create(user_id=user,
-                                                                    access_token = encoded_jwt,
-                                                                    refresh_token = refresh_token)
+                            useraccount = UserAccount.objects.create(
+                                user_id=user,
+                                access_token=encoded_jwt,
+                                refresh_token=refresh_token,
+                            )
                         for account_code, data in accounts_data.items():
-                            
+
                             account, created = Account.objects.get_or_create(
                                 user_id=user,
-                                bank_id=bank,
-                                account_code=account_code
+                                access_token=encoded_jwt,
+                                refresh_token=refresh_token,
                             )
+                        for account_code, data in accounts_data.items():
 
+                            account, created = Account.objects.get_or_create(
+                                user_id=user, bank_id=bank, account_code=account_code
+                            )
 
                             for item in data:
                                 if item["data"] == "transaction":
                                     amount = item["amount"]
-                                    if amount<0:
+                                    if amount < 0:
                                         transaction_type = "expense"
                                     else:
                                         transaction_type = "income"
@@ -65,7 +74,7 @@ class RegisterView(APIView):
                                             amount=abs(item["amount"]),
                                             type=transaction_type,
                                             subtype=item["category"],
-                                            date=item["date"]
+                                            date=item["date"],
                                         )
                                     except:
                                         Transaction.objects.create(
@@ -73,7 +82,7 @@ class RegisterView(APIView):
                                             amount=abs(item["amount"]),
                                             type=transaction_type,
                                             subtype="transfer",
-                                            date=item["date"]
+                                            date=item["date"],
                                         )
                                 elif item["data"] == "period_payment":
                                     try:
@@ -82,16 +91,14 @@ class RegisterView(APIView):
                                             amount=int(item["amount"]),
                                             date=item["date"],
                                             period=item["period"],
-                                            period_type=item["period_type"]
+                                            period_type=item["period_type"],
                                         )
                                     except:
                                         pass
 
-
                         response.raise_for_status()
                     except requests.RequestException as e:
                         print(f"Error notifying bank {bank.name}: {e}")
-
 
             return Response(
                 {
@@ -102,8 +109,7 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
-    
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

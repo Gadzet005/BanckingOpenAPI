@@ -8,19 +8,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('banking', '0010_alter_bank_api_url'),
+        ("banking", "0010_alter_bank_api_url"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PeriodicPayment',
+            name="PeriodicPayment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.IntegerField()),
-                ('period_type', models.CharField(max_length=100)),
-                ('period', models.IntegerField()),
-                ('date', models.DateTimeField(default=datetime.datetime.now)),
-                ('account_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='banking.account')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                ("period_type", models.CharField(max_length=100)),
+                ("period", models.IntegerField()),
+                ("date", models.DateTimeField(default=datetime.datetime.now)),
+                (
+                    "account_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="banking.account",
+                    ),
+                ),
             ],
         ),
     ]
