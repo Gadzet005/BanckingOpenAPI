@@ -96,22 +96,22 @@ export const TransferStatistics: React.FC = observer(() => {
           </Tabs>
         </Box>
         <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-          <ButtonGroup variant="outlined">
+          <ButtonGroup>
             <Button
               onClick={() => handleChangeTransferType("all")}
-              disabled={transferType == "all"}
+              variant={transferType == "all" ? "contained" : "outlined"}
             >
               Все
             </Button>
             <Button
               onClick={() => handleChangeTransferType("expense")}
-              disabled={transferType == "expense"}
+              variant={transferType == "expense" ? "contained" : "outlined"}
             >
               Расходы
             </Button>
             <Button
               onClick={() => handleChangeTransferType("income")}
-              disabled={transferType == "income"}
+              variant={transferType == "income" ? "contained" : "outlined"}
             >
               Доходы
             </Button>

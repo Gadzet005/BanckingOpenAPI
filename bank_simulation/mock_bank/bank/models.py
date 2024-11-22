@@ -20,6 +20,9 @@ class Bank(models.Model):
     name = models.CharField(max_length=50, unique=True)
     bank_code = models.IntegerField(null=True, unique=True)
 
+    def __str__(self):
+        return f"{self.name}: {self.bank_code}"
+
 
 class User(models.Model):
     name = models.CharField(max_length=50)
@@ -31,6 +34,9 @@ class Account(models.Model):
     account_number = models.IntegerField(unique=True)
     bank = models.ForeignKey(Bank, on_delete=models.PROTECT)
     balance = models.FloatField(default=0)
+
+    def __str__(self):
+        return str(self.account_number)
 
 
 class Transaction(models.Model):

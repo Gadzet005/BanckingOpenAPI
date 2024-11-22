@@ -33,7 +33,7 @@ export const Home: FC = () => {
         </Box>
       </Container>
 
-      <Container maxWidth="lg" sx={{ height: "100%" }}>
+      <Container maxWidth="lg" sx={{ height: "100%", mt: 3 }}>
         <Box
           sx={{ width: "100%" }}
           component="img"

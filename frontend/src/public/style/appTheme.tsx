@@ -51,6 +51,10 @@ export const appTheme = createTheme(
         main: mochaColors.red,
         dark: mochaColors.red,
       },
+      warning: {
+        main: mochaColors.peach,
+        dark: mochaColors.peach,
+      },
       success: {
         main: mochaColors.green,
         dark: mochaColors.green,
@@ -62,6 +66,10 @@ export const appTheme = createTheme(
       text: {
         secondary: mochaColors.subtext1,
         primary: mochaColors.text,
+      },
+      secondary: {
+        main: mochaColors.lavender,
+        dark: mochaColors.lavender,
       },
     },
     mixins: {

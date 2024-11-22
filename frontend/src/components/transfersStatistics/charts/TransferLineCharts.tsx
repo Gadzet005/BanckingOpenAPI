@@ -57,16 +57,16 @@ export const TransferLineCharts: React.FC<TransferLineChartsProps> = ({
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "center", pt: 1, gap: 1 }}>
-        <ButtonGroup variant="outlined">
+        <ButtonGroup>
           <Button
             onClick={() => setUseLinearRegression(() => false)}
-            disabled={!useLinearRegression}
+            variant={!useLinearRegression ? "contained" : "outlined"}
           >
             Данные
           </Button>
           <Button
             onClick={() => setUseLinearRegression(() => true)}
-            disabled={useLinearRegression}
+            variant={useLinearRegression ? "contained" : "outlined"}
           >
             Приближение
           </Button>
